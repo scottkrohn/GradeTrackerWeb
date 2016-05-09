@@ -1,2 +1,2 @@
 # GradeTrackerWeb
-Webb application version of GradeTracker.
+Web application version of GradeTracker.
