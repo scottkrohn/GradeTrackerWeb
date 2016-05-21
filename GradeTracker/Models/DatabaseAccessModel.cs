@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 namespace GradeTracker.Models
 {
-	public static class DatabaseAccessModel
+	public class DatabaseAccessModel 
 	{
 		
 		/************************************************************
@@ -20,7 +20,7 @@ namespace GradeTracker.Models
 			StudentModel student = new StudentModel();
 			try
 			{
-				DataTable data = DatabaseQuery.selectQuery(String.Format("SELECT * FROM skrohn_gradetracker.students WHERE student_id={0}", studentId));
+				DataTable data = SQLCommandModel.selectQuery(String.Format("SELECT * FROM skrohn_gradetracker.students WHERE student_id={0}", studentId));
 				if(data.Rows.Count > 0) 
 				{
 					student.firstName = data.Rows[0][1].ToString();
@@ -88,15 +88,15 @@ namespace GradeTracker.Models
 		{
 			string queryString = String.Format("INSERT INTO skrohn_gradetracker.students (first_name, last_name, student_id, username, hash_pw) VALUES (\"{0}\", \"{1}\", \"{2}\", \"{3}\", \"{4}\")", firstName, lastName, studentId, username, hashPw);
 
-			return DatabaseQuery.executeNonQuery(queryString);
+			return SQLCommandModel.executeNonQuery(queryString);
 		}
 
 		/************************************************************
 		 * Return a Semester object given a semester ID.
 		************************************************************/
-		public Semester getSemester(int semesterId)
+		public SemesterModel getSemester(int semesterId)
 		{
-			Semester semester = new Semester();
+			SemesterModel semester = new SemesterModel();
 			try
 			{
 				//DBAccess dbaccess = new DBAccess();
@@ -119,7 +119,7 @@ namespace GradeTracker.Models
 					semester.assocStudentId = data.Rows[0][0].ToString();
 					semester.termName = data.Rows[0][1].ToString();
 					semester.termYear = data.Rows[0][2].ToString();
-					semester.semesterId = data.Rows[0][3].ToString();
+					semester.semesterId = Convert.ToInt32(data.Rows[0][3]);
 				}
 				else
 				{
@@ -136,19 +136,19 @@ namespace GradeTracker.Models
 		/************************************************************
 		 * Return all semesters associated with a specific student ID.
 		************************************************************/
-		public List<Semester> getAllSemestersForStudent(string studentId)
+		public List<SemesterModel> getAllSemestersForStudent(string studentId)
 		{
-			List<Semester> allSemesters = new List<Semester>();
+			List<SemesterModel> allSemesters = new List<SemesterModel>();
 			try
 			{
-				DataTable data = DatabaseQuery.selectQuery(String.Format("SELECT * FROM skrohn_gradetracker.semesters WHERE assoc_student_id={0}", studentId));
+				DataTable data = SQLCommandModel.selectQuery(String.Format("SELECT * FROM skrohn_gradetracker.semesters WHERE assoc_student_id={0}", studentId));
 				for (int i = 0; i < data.Rows.Count; i++)
 				{
-					Semester foundSemester = new Semester();
+					SemesterModel foundSemester = new SemesterModel();
 					foundSemester.assocStudentId = data.Rows[i][0].ToString();
 					foundSemester.termName = data.Rows[i][1].ToString();
 					foundSemester.termYear = data.Rows[i][2].ToString();
-					foundSemester.semesterId= data.Rows[i][3].ToString();
+					foundSemester.semesterId= Convert.ToInt32(data.Rows[i][3]);
 					allSemesters.Add(foundSemester);
 				}
 			}
@@ -167,11 +167,11 @@ namespace GradeTracker.Models
 		{
 			// Don't dheck if this Semester already exists, allow user to enter duplicate semesters.
 			string query = String.Format("INSERT INTO skrohn_gradetracker.semesters (assoc_student_id, term_name, term_year) VALUES (\"{0}\", \"{1}\", \"{2}\")", studentId, termName, termYear);
-			return DatabaseQuery.executeNonQuery(query);
+			return SQLCommandModel.executeNonQuery(query);
 		}
 
 		/************************************************************
-		 * Deletes a Semester, as well as all courses associated with
+		 * Deletes a Semester, as well as all CourseModels associated with
 		 * that semester and all WorkItems associated with each course.
 		************************************************************/
 		public bool deleteSemester(int semesterId)
@@ -183,7 +183,7 @@ namespace GradeTracker.Models
 					return false;
 				}
 				string query = String.Format("DELETE FROM skrohn_gradetracker.semesters WHERE semester_id={0}", semesterId);
-				return DatabaseQuery.executeNonQuery(query);
+				return SQLCommandModel.executeNonQuery(query);
 			}
 			catch (Exception ex)
 			{
@@ -194,22 +194,22 @@ namespace GradeTracker.Models
 		/************************************************************
 		 * Return all Courses associated with a particular semester. 
 		************************************************************/
-		public List<Course> getAllCoursesForSemester(int semesterId)
+		public List<CourseModel> getAllCoursesForSemester(int semesterId)
 		{
-			List<Course> courses = new List<Course>();
+			List<CourseModel> courses = new List<CourseModel>();
 			try 
 			{
-				DataTable data = DatabaseQuery.selectQuery(String.Format("SELECT * FROM skrohn_gradetracker.courses WHERE assoc_semester_id={0}", semesterId));
+				DataTable data = SQLCommandModel.selectQuery(String.Format("SELECT * FROM skrohn_gradetracker.courses WHERE assoc_semester_id={0}", semesterId));
 				for(int i = 0; i < data.Rows.Count; i++)
 				{
-					Course foundCourse = new Course();
+					CourseModel foundCourse = new CourseModel();
 					foundCourse.courseId = Convert.ToInt32(data.Rows[i][0]);
 					foundCourse.assocSemesterId = Convert.ToInt32(data.Rows[i][1]);
 					foundCourse.courseCode = data.Rows[i][2].ToString();
 					foundCourse.courseNumber = data.Rows[i][3].ToString();
-					DataTable categories = DatabaseQuery.selectQuery(String.Format("SELECT * FROM skrohn_gradetracker.weights WHERE assoc_course_id={0}", foundCourse.courseId));
+					DataTable categories = SQLCommandModel.selectQuery(String.Format("SELECT * FROM skrohn_gradetracker.weights WHERE assoc_course_id={0}", foundCourse.courseId));
 					
-					// Insert categories/weights into Course objects dictionary of categories
+					// Insert categories/weights into CourseModel objects dictionary of categories
 					foundCourse.categories = new Dictionary<string,double>();
 					foreach (DataRow row in categories.Rows)
 					{
@@ -229,27 +229,27 @@ namespace GradeTracker.Models
 		}
 
 		/************************************************************
-		 * Add a Course to a Specified Semester.
+		 * Add a CourseModel to a Specified Semester.
 		************************************************************/
 		public bool addCourse(int assocSemesterId, string courseCode, string courseNumber)
 		{
 			// Don't check if course already exists, allow user to add duplicate courses.
 			string query = String.Format("INSERT INTO skrohn_gradetracker.courses (assoc_semester_id, course_code, course_number) VALUES ({0}, \"{1}\", \"{2}\")", assocSemesterId, courseCode, courseNumber);
-			return DatabaseQuery.executeNonQuery(query);
+			return SQLCommandModel.executeNonQuery(query);
 		}
 
 		/************************************************************
-		 * Get all WorkItems for a given Course.
+		 * Get all WorkItems for a given CourseModel.
 		************************************************************/
-		public List<WorkItem> getCourseWorkItems(int courseId)
+		public List<WorkItemModel> getCourseWorkItems(int courseId)
 		{
-			List<WorkItem> workItems = new List<WorkItem>();
+			List<WorkItemModel> workItems = new List<WorkItemModel>();
 			try
 			{
-				DataTable data = DatabaseQuery.selectQuery(String.Format("SELECT * FROM skrohn_gradetracker.work_items WHERE assoc_course_id={0}", courseId));
+				DataTable data = SQLCommandModel.selectQuery(String.Format("SELECT * FROM skrohn_gradetracker.work_items WHERE assoc_course_id={0}", courseId));
 				for (int i = 0; i < data.Rows.Count; i++)
 				{
-					WorkItem item = new WorkItem();
+					WorkItemModel item = new WorkItemModel();
 					item.assocCourseId = Convert.ToInt32(data.Rows[i][0]);
 					item.itemName = data.Rows[i][1].ToString();
 					item.categoryName = data.Rows[i][2].ToString();
@@ -266,14 +266,14 @@ namespace GradeTracker.Models
 		}
 
 		/************************************************************
-		 * Delete a specified Course. This will also delete all
+		 * Delete a specified CourseModel. This will also delete all
 		 * associated WorkItems for that course.
 		************************************************************/
 		public bool deleteCourse(int courseId)
 		{
 			string query = String.Format("DELETE FROM skrohn_gradetracker.courses WHERE course_id={0}", courseId);
-			// If Course is successfully delete, delete the WorkItems associated with that course.
-			bool deleteSuccess = DatabaseQuery.executeNonQuery(query);
+			// If CourseModel is successfully delete, delete the WorkItems associated with that course.
+			bool deleteSuccess = SQLCommandModel.executeNonQuery(query);
 			if(deleteSuccess) 
 			{
 				deleteCourseWeights(courseId);
@@ -288,10 +288,10 @@ namespace GradeTracker.Models
 		public bool deleteSemesterCourses(int semesterId)
 		{
 			// Get a list of all Courses associated with semesterId
-			List<Course> associatedCourses = new List<Course>();
+			List<CourseModel> associatedCourses = new List<CourseModel>();
 			try
 			{
-				DataTable data = DatabaseQuery.selectQuery(String.Format("SELECT * FROM skrohn_gradetracker.courses WHERE assoc_semester_id={0}", semesterId));
+				DataTable data = SQLCommandModel.selectQuery(String.Format("SELECT * FROM skrohn_gradetracker.courses WHERE assoc_semester_id={0}", semesterId));
 				foreach (DataRow row in data.Rows)
 				{
 					deleteCourse(Convert.ToInt32(row[0]));
@@ -305,7 +305,7 @@ namespace GradeTracker.Models
 		}
 
 		/************************************************************
-		 * Add a work item to a specified Course.
+		 * Add a work item to a specified CourseModel.
 		************************************************************/
 		public bool addWorkItem(int assocCourseId, string itemName, string category, double pointsPossible, double pointsEarned)
 		{
@@ -313,11 +313,11 @@ namespace GradeTracker.Models
 			itemName.Replace("+", " ");
 			category.Replace("+", " ");
 			string query = String.Format("INSERT INTO skrohn_gradetracker.work_items (assoc_course_id, item_name, category_name, points_possible, points_earned) VALUES ({0}, \"{1}\", \"{2}\", {3}, {4})", assocCourseId, itemName, category, pointsPossible, pointsEarned);
-			return DatabaseQuery.executeNonQuery(query);
+			return SQLCommandModel.executeNonQuery(query);
 		}
 
 		/************************************************************
-		 * Delete a single specific WorkItem
+		 * Delete a single specific WorkItemModel
 		************************************************************/
 		public bool deleteWorkItem(int assocCourseId, string itemName, string category)
 		{
@@ -325,16 +325,16 @@ namespace GradeTracker.Models
 			itemName.Replace("+", " ");
 			category.Replace("+", " ");
 			string query = String.Format("DELETE FROM skrohn_gradetracker.work_items WHERE assoc_course_id={0} AND item_name=\"{1}\" AND category_name=\"{2}\"", assocCourseId, itemName, category);
-			return DatabaseQuery.executeNonQuery(query);
+			return SQLCommandModel.executeNonQuery(query);
 		}
 
 		/************************************************************
-		 * Delete all WorkItems associated with a specific Course.
+		 * Delete all WorkItems associated with a specific CourseModel.
 		************************************************************/
 		public bool deleteCourseWorkItems(int courseId)
 		{
 			string query = String.Format("DELETE FROM skrohn_gradetracker.work_items WHERE assoc_course_id={0}", courseId);
-			return DatabaseQuery.executeNonQuery(query);
+			return SQLCommandModel.executeNonQuery(query);
 		}
 
 		/************************************************************
@@ -343,16 +343,16 @@ namespace GradeTracker.Models
 		public bool deleteWeightCategory(int courseId, string category)
 		{
 			string query = String.Format("DELETE FROM skrohn_gradetracker.weights WHERE assoc_course_id={0} AND category=\"{1}\"", courseId, category);
-			return DatabaseQuery.executeNonQuery(query);
+			return SQLCommandModel.executeNonQuery(query);
 		}
 
 		/************************************************************
-		 * Delete all weights associated with a specific Course.
+		 * Delete all weights associated with a specific CourseModel.
 		************************************************************/
 		public bool deleteCourseWeights(int courseId)
 		{
 			string query = String.Format("DELETE FROM skrohn_gradetracker.weights where assoc_course_id={0}", courseId);
-			return DatabaseQuery.executeNonQuery(query);
+			return SQLCommandModel.executeNonQuery(query);
 		}
 	}
 }

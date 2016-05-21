@@ -9,7 +9,8 @@ namespace GradeTracker.Models
 	{
 		public int assocSemesterId {get; set;}
 		public string courseCode {get; set;}
-		public int semesterId {get; set;}
-		public string assocStudentId {get; set;}
+		public int courseId {get; set;}
+		public string courseNumber {get; set;}
+		public Dictionary<String, Double> categories;
 	}
 }

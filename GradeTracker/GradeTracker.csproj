@@ -172,6 +172,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\SemesterModel.cs" />
+    <Compile Include="Models\SQLCommandModel.cs" />
     <Compile Include="Models\StudentModel.cs" />
     <Compile Include="Models\WorkItemModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
