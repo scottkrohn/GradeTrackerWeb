@@ -50,5 +50,8 @@ C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\obj\Debug\GradeTracker.Migrations.InitialCreate.resources
+C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\obj\Debug\GradeTracker.csproj.GenerateResource.Cache
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\obj\Debug\GradeTracker.dll
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\obj\Debug\GradeTracker.pdb
+C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\obj\Debug\GradeTracker.csprojResolveAssemblyReference.cache

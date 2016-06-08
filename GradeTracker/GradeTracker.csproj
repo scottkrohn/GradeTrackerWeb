@@ -160,11 +160,17 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\GradebookController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605211745468_InitialCreate.cs" />
+    <Compile Include="Migrations\201605211745468_InitialCreate.Designer.cs">
+      <DependentUpon>201605211745468_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CategoryWeight.cs" />
     <Compile Include="Models\CourseModel.cs" />
@@ -182,11 +188,48 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="favicon.ico" />
+    <Content Include="font-awesome-4.6.3\css\font-awesome.css" />
+    <Content Include="font-awesome-4.6.3\css\font-awesome.min.css" />
+    <Content Include="font-awesome-4.6.3\fonts\fontawesome-webfont.svg" />
+    <Content Include="font-awesome-4.6.3\HELP-US-OUT.txt" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="font-awesome-4.6.3\fonts\fontawesome-webfont.eot" />
+    <Content Include="font-awesome-4.6.3\fonts\fontawesome-webfont.ttf" />
+    <Content Include="font-awesome-4.6.3\fonts\fontawesome-webfont.woff" />
+    <Content Include="font-awesome-4.6.3\fonts\fontawesome-webfont.woff2" />
+    <Content Include="font-awesome-4.6.3\fonts\FontAwesome.otf" />
+    <Content Include="font-awesome-4.6.3\less\animated.less" />
+    <Content Include="font-awesome-4.6.3\less\bordered-pulled.less" />
+    <Content Include="font-awesome-4.6.3\less\core.less" />
+    <Content Include="font-awesome-4.6.3\less\fixed-width.less" />
+    <Content Include="font-awesome-4.6.3\less\font-awesome.less" />
+    <Content Include="font-awesome-4.6.3\less\icons.less" />
+    <Content Include="font-awesome-4.6.3\less\larger.less" />
+    <Content Include="font-awesome-4.6.3\less\list.less" />
+    <Content Include="font-awesome-4.6.3\less\mixins.less" />
+    <Content Include="font-awesome-4.6.3\less\path.less" />
+    <Content Include="font-awesome-4.6.3\less\rotated-flipped.less" />
+    <Content Include="font-awesome-4.6.3\less\screen-reader.less" />
+    <Content Include="font-awesome-4.6.3\less\stacked.less" />
+    <Content Include="font-awesome-4.6.3\less\variables.less" />
+    <Content Include="font-awesome-4.6.3\scss\font-awesome.scss" />
+    <Content Include="font-awesome-4.6.3\scss\_animated.scss" />
+    <Content Include="font-awesome-4.6.3\scss\_bordered-pulled.scss" />
+    <Content Include="font-awesome-4.6.3\scss\_core.scss" />
+    <Content Include="font-awesome-4.6.3\scss\_fixed-width.scss" />
+    <Content Include="font-awesome-4.6.3\scss\_icons.scss" />
+    <Content Include="font-awesome-4.6.3\scss\_larger.scss" />
+    <Content Include="font-awesome-4.6.3\scss\_list.scss" />
+    <Content Include="font-awesome-4.6.3\scss\_mixins.scss" />
+    <Content Include="font-awesome-4.6.3\scss\_path.scss" />
+    <Content Include="font-awesome-4.6.3\scss\_rotated-flipped.scss" />
+    <Content Include="font-awesome-4.6.3\scss\_screen-reader.scss" />
+    <Content Include="font-awesome-4.6.3\scss\_stacked.scss" />
+    <Content Include="font-awesome-4.6.3\scss\_variables.scss" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -234,6 +277,10 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Home\Semesters.cshtml" />
+    <Content Include="Views\Home\AccountHome.cshtml" />
+    <Content Include="Views\Gradebook\AddSemester.cshtml" />
+    <Content Include="Views\Gradebook\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -244,6 +291,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201605211745468_InitialCreate.resx">
+      <DependentUpon>201605211745468_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

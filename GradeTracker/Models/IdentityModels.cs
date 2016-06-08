@@ -29,5 +29,12 @@ namespace GradeTracker.Models
         {
             return new ApplicationDbContext();
         }
+
+		/*
+		 * Set of StudentModel objects to be stored in the database.
+		 */
+		public DbSet<StudentModel> Students { get; set; }
+
+		public System.Data.Entity.DbSet<GradeTracker.Models.SemesterModel> SemesterModels { get; set; }
     }
 }

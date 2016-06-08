@@ -153,8 +153,12 @@ namespace GradeTracker.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
+
                 if (result.Succeeded)
                 {
+					var db = new ApplicationDbContext();
+					var student = new StudentModel{assocUserAccountId = user.Id, firstName = model.FirstName, lastName = model.LastName, studentId = model.StudentId, school = model.SchoolName};
+
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
@@ -162,7 +166,8 @@ namespace GradeTracker.Controllers
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
+					db.Students.Add(student);
+					db.SaveChanges();
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);

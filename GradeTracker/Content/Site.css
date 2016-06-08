@@ -22,3 +22,18 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.add-margin-bottom {
+    margin-bottom: 20px;
+}
+
+.add-margin-top{
+    margin-top: 20px;
+}
+
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:         flex;
+}

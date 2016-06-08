@@ -25,8 +25,7 @@ namespace GradeTracker.Models
 				{
 					student.firstName = data.Rows[0][1].ToString();
 					student.lastName = data.Rows[0][1].ToString();
-					student.id = data.Rows[0][2].ToString();
-					student.username = data.Rows[0][3].ToString();
+					student.studentId = data.Rows[0][2].ToString();
 				}
 				else
 				{
@@ -69,8 +68,7 @@ namespace GradeTracker.Models
 					StudentModel foundStudent = new StudentModel();
 					foundStudent.firstName = data.Rows[i][0].ToString();
 					foundStudent.lastName= data.Rows[i][1].ToString();
-					foundStudent.id = data.Rows[i][2].ToString();
-					foundStudent.username = data.Rows[i][3].ToString();
+					foundStudent.studentId = data.Rows[i][2].ToString();
 					allStudents.Add(foundStudent);
 				}
 			}
