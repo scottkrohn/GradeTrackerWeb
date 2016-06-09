@@ -17,6 +17,7 @@ C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Microsoft.Owin.Security.OAuth.dll
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Microsoft.Owin.Security.Twitter.dll
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\MySql.Data.dll
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Newtonsoft.Json.dll
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Owin.dll
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\System.Web.Helpers.dll
@@ -27,6 +28,8 @@ C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\System.Web.WebPages.dll
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\System.Web.WebPages.Razor.dll
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\WebGrease.dll
+C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Antlr3.Runtime.pdb
+C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Newtonsoft.Json.xml
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\System.Web.Helpers.xml
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\System.Web.Mvc.xml
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\System.Web.Optimization.xml
@@ -34,8 +37,6 @@ C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\System.Web.WebPages.xml
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\System.Web.WebPages.Deployment.xml
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\System.Web.WebPages.Razor.xml
-C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Antlr3.Runtime.pdb
-C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Newtonsoft.Json.xml
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\EntityFramework.xml
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\EntityFramework.SqlServer.xml
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Microsoft.AspNet.Identity.Core.xml
@@ -50,8 +51,8 @@ C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\obj\Debug\GradeTracker.csprojResolveAssemblyReference.cache
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\obj\Debug\GradeTracker.Migrations.InitialCreate.resources
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\obj\Debug\GradeTracker.csproj.GenerateResource.Cache
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\obj\Debug\GradeTracker.dll
 C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\obj\Debug\GradeTracker.pdb
-C:\Users\skroh\Dropbox\Grade Tracker Web App Projects\GradeTracker\GradeTracker\obj\Debug\GradeTracker.csprojResolveAssemblyReference.cache

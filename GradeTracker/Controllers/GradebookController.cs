@@ -29,5 +29,10 @@ namespace GradeTracker.Controllers
 			}	
 			return RedirectToAction("Gradebook", "Error");
 		}
+
+		public ActionResult Courses(SemesterModel semester) 
+		{
+			return View(semester);	
+		}
     }
 }
