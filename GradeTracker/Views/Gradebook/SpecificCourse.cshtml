@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewBag.Title = "SpecificCourse";
+}
+
+<h2>@Model.courseCode @Model.courseNumber</h2>
+
+<div class="row">
+    <a href="@Url.Action("AddWorkItem", "Gradebook", Model)" class="btn btn-primary">Add Work Item</a>
+    @Html.ActionLink("Back to Courses", "Courses", ViewData["CurrentSemester"])
+</div>
+

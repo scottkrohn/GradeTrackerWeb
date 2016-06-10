@@ -18,7 +18,7 @@
             @{
                 foreach(var course in Model)
                 {
-                    <div class="courseEntry col-md-12"><a href="" class="list-group-item">@course.courseCode @course.courseNumber</a></div>
+                    <div class="courseEntry col-md-12"><a href="@Url.Action("SpecificCourse", "Gradebook", course)" class="list-group-item">@course.courseCode @course.courseNumber</a></div>
                 }
             }
         </div>

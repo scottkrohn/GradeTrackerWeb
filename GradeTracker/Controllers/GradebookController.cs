@@ -24,6 +24,12 @@ namespace GradeTracker.Controllers
             return result.ToList();
         }
 
+        private SemesterModel GetSemesterForCourse(CourseModel course)
+        {
+            var result = db.SemesterModels.SqlQuery(String.Format("Select * FROM SemesterModels WHERE semesterId={0}", course.assocSemesterId));
+            return result.First();
+        }
+        
         // HTTP GET Request to view the Courses page
         // Sends the selected SemesterModel to the page.
         public ActionResult Courses(SemesterModel semester) 
@@ -35,6 +41,12 @@ namespace GradeTracker.Controllers
             ViewData["CurrentSemester"] = semester;
 			return View(model);	
 		}
+
+        public ActionResult SpecificCourse(CourseModel course)
+        {
+            ViewData["CurrentSemester"] = GetSemesterForCourse(course);
+            return View(course);
+        }
 
         public ActionResult Error(string errorMessage) 
         {
@@ -57,9 +69,16 @@ namespace GradeTracker.Controllers
         {
             CourseModel course = new CourseModel();
             course.assocSemesterId = semester.semesterId;
-            
             ViewData["CurrentSemester"] = semester;
             return View(course);
+        }
+
+        public ActionResult AddWorkItem(CourseModel course)
+        {
+            WorkItemModel workItem = new WorkItemModel();
+            workItem.assocCourseId = course.courseId;
+            ViewData["currentCourse"] = course;
+            return View(workItem);
         }
 
 		[HttpPost]
@@ -80,18 +99,25 @@ namespace GradeTracker.Controllers
         public ActionResult SaveNewCourse(CourseModel course) {
             if(ModelState.IsValid) 
             {
-                var db = new ApplicationDbContext();
                 db.CourseModels.Add(course);
                 db.SaveChanges();
-                // TODO: After saving the user isn't re-directed to the "Courses" page from which they came.
-                // The semesterId is always sent back as 0, so the Courses page isn't able to load the correct
-                // courses data from the database.
-                List<SemesterModel> currentSemester = QuerySemesters(String.Format("SELECT * FROM SemesterModels WHERE semesterId={0}", course.assocSemesterId));
-                return RedirectToAction("Courses", "Gradebook", currentSemester.First());
+                SemesterModel currentSemester = GetSemesterForCourse(course);
+                return RedirectToAction("Courses", "Gradebook", currentSemester);
             }
             return RedirectToAction("Error", "Gradebook", "Course was not added.");
         }
+/*
+        [HttpPost]
+        public ActionResult SaveNewWorkItem(WorkItemModel workItem)
+        {
+            if(ModelState.IsValid)
+            {
+                db.WorkItemModels.Add(workItem);
+                db.SaveChanges();
 
+            }
+        }
+        */
 		
     }
 }
