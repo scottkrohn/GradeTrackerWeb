@@ -29,6 +29,9 @@ namespace GradeTracker.Controllers
         public ActionResult Courses(SemesterModel semester) 
 		{
             var model = QueryCourses(String.Format("SELECT * FROM CourseModels WHERE assocSemesterId={0}", semester.semesterId));
+            ViewBag.CurrentTerm = semester.termName;
+            ViewBag.CurrentYear = semester.termYear;
+            ViewData["CurrentSemesterString"] = semester.termName.ToString() + " " + semester.termYear.ToString() ;
             ViewData["CurrentSemester"] = semester;
 			return View(model);	
 		}
@@ -54,6 +57,7 @@ namespace GradeTracker.Controllers
         {
             CourseModel course = new CourseModel();
             course.assocSemesterId = semester.semesterId;
+            
             ViewData["CurrentSemester"] = semester;
             return View(course);
         }

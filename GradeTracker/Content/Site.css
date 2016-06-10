@@ -37,3 +37,22 @@ textarea {
   display: -ms-flexbox;
   display:         flex;
 }
+
+.navbar-custom {
+  background-color: #6a778e;
+  border-color: #909ba3;
+}
+
+.custom-mine a {
+    color: blue;
+}
+
+/* Adjust Menu colors - Normal */
+.navbar .nav li a {
+color:          #FFFFFF;
+}
+
+/* Adjust Menu colors - Normal */
+.navbar .nav li a:hover {
+color:          #06394f;
+}

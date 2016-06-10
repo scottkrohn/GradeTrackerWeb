@@ -3,8 +3,12 @@
     ViewBag.Title = "Courses";
 }
 
-<h2>Courses</h2>
 
+<div class="row add-margin-top">
+    <div class="col-md-6">
+        <h2>@ViewData["CurrentSemesterString"]</h2>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-lg-6">
@@ -19,4 +23,7 @@
             }
         </div>
      </div>
+</div>
+<div class="row add-margin-top">
+    <a href="@Url.Action("Index", "Home")">Back to Semester List</a>
 </div>
