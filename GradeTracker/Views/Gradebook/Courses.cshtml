@@ -5,7 +5,18 @@
 
 <h2>Courses</h2>
 
+
 <div class="row">
-
+    <div class="col-lg-6">
+        <a href="@Url.Action("AddCourse", "Gradebook", ViewData["CurrentSemester"])" class="btn btn-primary">Add Course</a>
+        <div class="list-group courseGroup">
+            <!-- List all of the CourseModels associated with the selected semester -->
+            @{
+                foreach(var course in Model)
+                {
+                    <div class="courseEntry col-md-12"><a href="" class="list-group-item">@course.courseCode @course.courseNumber</a></div>
+                }
+            }
+        </div>
+     </div>
 </div>
-
