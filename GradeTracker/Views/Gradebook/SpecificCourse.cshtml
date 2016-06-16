@@ -3,10 +3,51 @@
     ViewBag.Title = "SpecificCourse";
 }
 
-<h2>@Model.courseCode @Model.courseNumber</h2>
+<div class="row add-margin-top">
+    <div class="col-md-6">
+        <h2>@Model.courseCode @Model.courseNumber</h2>
+        <h4></h4>
+    </div>
+</div>
+<hr />
 
 <div class="row">
-    <a href="@Url.Action("AddWorkItem", "Gradebook", Model)" class="btn btn-primary">Add Work Item</a>
+
+    <!-- TODO: Show sections for each cateogry and display the work items that have been added. -->
+    <!-- TODO: Add "Weighted Grade" label. -->
+
+    <div class="col-lg-7">
+        <div class="row">
+            <!-- List Title -->
+            <div class="col-md-9 add-margin-bottom">
+                <h3 style="display: inline;">Work Items</h3>
+            </div>
+
+            <!-- Add WorkItem button -->
+            <div class="col-md-3">
+                <a href="@Url.Action("AddWorkItem", "Gradebook", Model)" class="btn btn-primary">Add Work Item</a>
+            </div>
+        </div>
+            
+        <!-- list-group of WorkItems -->
+        <div class="list-group workItemGroup">
+            @{
+                var workItemList = ViewData["AssociatedWorkItems"] as List<GradeTracker.Models.WorkItemModel>;
+                foreach(var workItem in workItemList)
+                {
+                    <div class="workItemEntry col-md-12"><a href="#" class="list-group-item">@workItem.itemName</a></div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row add-margin-top">
     @Html.ActionLink("Back to Courses", "Courses", ViewData["CurrentSemester"])
 </div>
 
+<script>
+    $(document).ready(function () {
+        //$('div').attr("style", "border: 1px solid");
+    });
+</script>

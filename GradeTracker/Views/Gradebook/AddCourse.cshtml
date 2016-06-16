@@ -6,6 +6,7 @@
 
 <h2>AddCourse</h2>
 
+<!-- TODO: Add category setup when a new course is created. -->
 @using (Html.BeginForm("SaveNewCourse", "Gradebook")) 
 {
     @Html.AntiForgeryToken()
@@ -45,6 +46,7 @@
         </div>
     </div>
 }
+
 
 <div>
     @Html.ActionLink("Back to Courses", "Courses", ViewData["CurrentSemester"])

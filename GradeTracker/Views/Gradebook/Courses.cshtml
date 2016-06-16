@@ -9,12 +9,26 @@
         <h2>@ViewData["CurrentSemesterString"]</h2>
     </div>
 </div>
+<hr />
 
+<!-- TODO: Add the current course grade to each course listing. -->
+<!-- TODO: Show the overall GPA for the semester. -->
 <div class="row">
-    <div class="col-lg-6">
-        <a href="@Url.Action("AddCourse", "Gradebook", ViewData["CurrentSemester"])" class="btn btn-primary">Add Course</a>
+    <div class="col-lg-7">
+        <div class="row">
+            <!-- List Title -->
+            <div class="col-md-9 add-margin-bottom">
+                <h3 style="display: inline;">Courses</h3>
+            </div>
+
+            <!-- Add WorkItem button -->
+            <div class="col-md-3">
+                <a href="@Url.Action("AddCourse", "Gradebook", ViewData["CurrentSemester"])" class="btn btn-primary">Add Course</a>
+            </div>
+        </div>
+            
+        <!-- list-group of Courses -->
         <div class="list-group courseGroup">
-            <!-- List all of the CourseModels associated with the selected semester -->
             @{
                 foreach(var course in Model)
                 {
@@ -22,8 +36,10 @@
                 }
             }
         </div>
-     </div>
+    </div>
 </div>
+
+
 <div class="row add-margin-top">
     <a href="@Url.Action("Index", "Home")">Back to Semester List</a>
 </div>

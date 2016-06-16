@@ -8,12 +8,16 @@ namespace GradeTracker.Models
 {
 	public class CourseModel
 	{
+        [Required]
 		public int assocSemesterId {get; set;}
         [Display(Name="Course Code")]
+        [Required]
 		public string courseCode {get; set;}
         [Key]
+        [Required]
 		public int courseId {get; set;}
         [Display(Name="Course Number")]
+        [Required]
 		public string courseNumber {get; set;}
 		public Dictionary<String, Double> categories;
         public List<WorkItemModel> WorkItems { get; set; }

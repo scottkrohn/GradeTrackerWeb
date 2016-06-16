@@ -1,6 +1,7 @@
 ﻿using GradeTracker.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -12,6 +13,7 @@ namespace GradeTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        /****************** DATABASE ACCESS FUNCTIONS ********************/
         private List<CourseModel> QueryCourses(string query)
         {
             var result = db.CourseModels.SqlQuery(query);
@@ -29,6 +31,20 @@ namespace GradeTracker.Controllers
             var result = db.SemesterModels.SqlQuery(String.Format("Select * FROM SemesterModels WHERE semesterId={0}", course.assocSemesterId));
             return result.First();
         }
+
+        private CourseModel GetCourseById(int courseId)
+        {
+            var result = db.CourseModels.SqlQuery(String.Format("SELECT * FROM CourseModels where courseId={0}", courseId));
+            return result.First();
+        }
+
+        private List<WorkItemModel> GetWorkItemsForCourse(CourseModel course)
+        {
+            var result = db.WorkItemModels.SqlQuery(String.Format("SELECT * FROM WorkItemModels WHERE assocCourseId={0}", course.courseId));
+            return result.ToList();
+        }
+
+        /*****************************************************************/
         
         // HTTP GET Request to view the Courses page
         // Sends the selected SemesterModel to the page.
@@ -45,6 +61,7 @@ namespace GradeTracker.Controllers
         public ActionResult SpecificCourse(CourseModel course)
         {
             ViewData["CurrentSemester"] = GetSemesterForCourse(course);
+            ViewData["AssociatedWorkItems"] = GetWorkItemsForCourse(course);
             return View(course);
         }
 
@@ -86,10 +103,8 @@ namespace GradeTracker.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var db = new ApplicationDbContext();
 				db.SemesterModels.Add(semester);
 				db.SaveChanges();
-
 				return RedirectToAction("Index", "Home");
 			}	
 			return RedirectToAction("Error", "Gradebook", "Semester was not added.");
@@ -106,7 +121,9 @@ namespace GradeTracker.Controllers
             }
             return RedirectToAction("Error", "Gradebook", "Course was not added.");
         }
-/*
+
+        
+
         [HttpPost]
         public ActionResult SaveNewWorkItem(WorkItemModel workItem)
         {
@@ -114,10 +131,11 @@ namespace GradeTracker.Controllers
             {
                 db.WorkItemModels.Add(workItem);
                 db.SaveChanges();
-
+                CourseModel currentCourse = GetCourseById(workItem.assocCourseId);
+                return RedirectToAction("SpecificCourse", "Gradebook", currentCourse);
             }
+            return RedirectToAction("Error", "Gradebook", "Work Item was not added.");
         }
-        */
 		
     }
 }
