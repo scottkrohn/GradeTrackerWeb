@@ -78,7 +78,7 @@ namespace GradeTracker.Controllers
 		}
 
 		[HttpPost]
-		public string SaveNewCategoryWeight(int courseId, string categoryName, int categoryWeight)
+		public JsonResult SaveNewCategoryWeight(int courseId, string categoryName, int categoryWeight)
 		{
 			CourseModel course = GetCourseById(courseId);
 			CategoryWeight weight = new CategoryWeight();
@@ -90,11 +90,11 @@ namespace GradeTracker.Controllers
 			{
 				db.CategoryWeights.Add(weight);
 				db.SaveChanges();
-				return "success";
+				return Json(weight);
 			}
 			catch(Exception ex)
 			{
-				return ex.Message;
+				return new JsonResult();
 			}
 		}
 
