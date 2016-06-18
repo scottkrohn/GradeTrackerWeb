@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
-//testing testing
-
 namespace GradeTracker.Controllers
 {
     public class GradebookController : Controller
