@@ -102,7 +102,7 @@ namespace GradeTracker.Controllers
         {
             ViewData["CurrentSemester"] = GetSemesterForCourse(course);
             ViewData["AssociatedWorkItems"] = GetWorkItemsForCourse(course);
-			ViewData["AssociatenhdCategoryWeights"] = GetCategoryWeightsForCourse(course);
+			ViewData["AssociatedCategoryWeights"] = GetCategoryWeightsForCourse(course);
             return View(course);
         }
 
