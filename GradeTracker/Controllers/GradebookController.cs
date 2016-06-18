@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
+
 namespace GradeTracker.Controllers
 {
     public class GradebookController : Controller
@@ -101,7 +102,7 @@ namespace GradeTracker.Controllers
         {
             ViewData["CurrentSemester"] = GetSemesterForCourse(course);
             ViewData["AssociatedWorkItems"] = GetWorkItemsForCourse(course);
-			ViewData["AssociatenhdCategoryWeights"] = GetCategoryWeightsForCourse(course);
+			ViewData["AssociatedCategoryWeights"] = GetCategoryWeightsForCourse(course);
             return View(course);
         }
 
