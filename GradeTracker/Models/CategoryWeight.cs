@@ -8,7 +8,6 @@ namespace GradeTracker.Models
 {
 	public class CategoryWeight
 	{
-        [Key]
         [Display(Name ="Category")]
         [Required]
 		public string categoryName {get; set;}
@@ -16,5 +15,7 @@ namespace GradeTracker.Models
         [Display(Name ="Weight")]
 		public int categoryWeight {get; set;}
         public int assocCourseId {get; set; }
+        [Key]
+		public int categoryId {get; set; }
 	}
 }

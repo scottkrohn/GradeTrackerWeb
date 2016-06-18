@@ -68,16 +68,18 @@
         </div>
     </div>
 
-    <div class="col-lg-2">
-        Current Categories
-        @{
-            var categories = ViewData["AssociatedCategoryWeights"] as List<GradeTracker.Models.CategoryWeight>;
-            foreach(var category in categories)
-            {
-                <p>@category.categoryName - @category.categoryWeight</p>
-            }
+    <div class="col-lg-2 categorySection">
+        <h4><u>Current Categories</u></h4>
+        <div class="list-group categoriesList">
+            @{
+                var categories = ViewData["AssociatedCategoryWeights"] as List<GradeTracker.Models.CategoryWeight>;
+                foreach(var category in categories)
+                {
+                    <div class="list-group-item">@category.categoryName - @category.categoryWeight</div>
+                }
 
-        }
+            }
+        </div>
 
     </div>
 </div>
