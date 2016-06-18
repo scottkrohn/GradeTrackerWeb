@@ -192,6 +192,7 @@ namespace GradeTracker.Models
 		/************************************************************
 		 * Return all Courses associated with a particular semester. 
 		************************************************************/
+        /*
 		public List<CourseModel> getAllCoursesForSemester(int semesterId)
 		{
 			List<CourseModel> courses = new List<CourseModel>();
@@ -208,7 +209,7 @@ namespace GradeTracker.Models
 					DataTable categories = SQLCommandModel.selectQuery(String.Format("SELECT * FROM skrohn_gradetracker.weights WHERE assoc_course_id={0}", foundCourse.courseId));
 					
 					// Insert categories/weights into CourseModel objects dictionary of categories
-					foundCourse.categories = new Dictionary<string,double>();
+					foundCourse.categories = new List<CategoryWeight>();
 					foreach (DataRow row in categories.Rows)
 					{
 						foundCourse.categories[row[1].ToString()] = Convert.ToDouble(row[2]);
@@ -225,6 +226,7 @@ namespace GradeTracker.Models
 
 			return courses;
 		}
+        */
 
 		/************************************************************
 		 * Add a CourseModel to a Specified Semester.

@@ -44,6 +44,12 @@ namespace GradeTracker.Controllers
             return result.ToList();
         }
 
+        private List<CategoryWeight> GetCategoryWeightsForCourse(CourseModel course)
+        {
+            var result = db.CategoryWeights.SqlQuery(String.Format("SELECT * FROM CategoryWeights WHERE assocCourseId={0}", course.courseId));
+            return result.ToList();
+        }
+		
         /*****************************************************************/
         
         // HTTP GET Request to view the Courses page
@@ -58,17 +64,51 @@ namespace GradeTracker.Controllers
 			return View(model);	
 		}
 
+		[HttpPost]
+		public int GetCurrentWeightTotal(int courseId)
+		{
+			List<CategoryWeight> weights = GetCategoryWeightsForCourse(GetCourseById(courseId));
+			int total = 0;
+			foreach(CategoryWeight weight in weights)
+			{
+				total += weight.categoryWeight;
+			}
+			return total;
+		}
+
+		[HttpPost]
+		public string SaveNewCategoryWeight(int courseId, string categoryName, int categoryWeight)
+		{
+			CourseModel course = GetCourseById(courseId);
+			CategoryWeight weight = new CategoryWeight();
+			weight.assocCourseId = course.courseId;
+			weight.categoryName = categoryName;
+			weight.categoryWeight = categoryWeight;
+
+			try
+			{
+				db.CategoryWeights.Add(weight);
+				db.SaveChanges();
+				return "success";
+			}
+			catch(Exception ex)
+			{
+				return ex.Message;
+			}
+		}
+
         public ActionResult SpecificCourse(CourseModel course)
         {
             ViewData["CurrentSemester"] = GetSemesterForCourse(course);
             ViewData["AssociatedWorkItems"] = GetWorkItemsForCourse(course);
+			ViewData["AssociatenhdCategoryWeights"] = GetCategoryWeightsForCourse(course);
             return View(course);
         }
 
         public ActionResult Error(string errorMessage) 
         {
             // Serve the Error view with the error message passed as an object.
-            return View((object)errorMessage);
+            return Content(errorMessage);
         }
 
         // Adds a new SemesterModel to the database and associated it
@@ -88,6 +128,18 @@ namespace GradeTracker.Controllers
             course.assocSemesterId = semester.semesterId;
             ViewData["CurrentSemester"] = semester;
             return View(course);
+        }
+
+        public ActionResult EditCategoryWeights(CourseModel course)
+        {
+            ViewData["CurrentCategoryWeights"] = GetCategoryWeightsForCourse(course);
+            return View();
+        }
+
+        [HttpPost]
+        public string SetupCategoryInputs(int count)
+        {
+            return count.ToString();
         }
 
         public ActionResult AddWorkItem(CourseModel course)
@@ -114,6 +166,7 @@ namespace GradeTracker.Controllers
         public ActionResult SaveNewCourse(CourseModel course) {
             if(ModelState.IsValid) 
             {
+				course.categories = new List<CategoryWeight>();
                 db.CourseModels.Add(course);
                 db.SaveChanges();
                 SemesterModel currentSemester = GetSemesterForCourse(course);

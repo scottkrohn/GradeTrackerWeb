@@ -40,5 +40,7 @@ namespace GradeTracker.Models
         public System.Data.Entity.DbSet<GradeTracker.Models.CourseModel> CourseModels { get; set; }
 
         public System.Data.Entity.DbSet<GradeTracker.Models.WorkItemModel> WorkItemModels { get; set; }
+
+        public System.Data.Entity.DbSet<GradeTracker.Models.CategoryWeight> CategoryWeights { get; set; }
     }
 }

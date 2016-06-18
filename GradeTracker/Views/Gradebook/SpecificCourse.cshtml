@@ -16,15 +16,15 @@
     <!-- TODO: Show sections for each cateogry and display the work items that have been added. -->
     <!-- TODO: Add "Weighted Grade" label. -->
 
-    <div class="col-lg-7">
+    <div class="col-lg-5">
         <div class="row">
             <!-- List Title -->
-            <div class="col-md-9 add-margin-bottom">
+            <div class="col-md-8 add-margin-bottom">
                 <h3 style="display: inline;">Work Items</h3>
             </div>
 
             <!-- Add WorkItem button -->
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <a href="@Url.Action("AddWorkItem", "Gradebook", Model)" class="btn btn-primary">Add Work Item</a>
             </div>
         </div>
@@ -40,6 +40,45 @@
             }
         </div>
     </div>
+
+    <div class="col-lg-5">
+        <div class="row">
+            <!-- List Title -->
+            <div class="col-md-6 add-margin-bottom">
+                <h3 style="display: inline;">Weight Categories</h3>
+            </div>
+
+            <!-- Add WorkItem button -->
+            <div class="col-md-3">
+                <a href="@Url.Action("AddCategoryWeight", "Gradebook", Model)" class="btn btn-primary">Edit Categories</a>
+            </div>
+        </div>
+
+        <div class="form-horizontal">
+            <div class="col-md-12 form-group">
+                @Html.Label("Name", htmlAttributes: new { @class = "control-label col-md-2"})
+                @Html.TextBox("categoryNameBox", "", htmlAttributes: new { @class="form-control col-md-7"})
+            </div>
+            <div class="col-md-12 form-group">
+                @Html.Label("Weight", htmlAttributes: new { @class = "control-label col-md-2"})
+                @Html.TextBox("categoryWeightBox", "", htmlAttributes: new { @class="form-control col-md-7"})
+            </div>
+
+            <div class="btn btn-default addCategoryButton">Add New Category</div>
+        </div>
+    </div>
+
+    <div class="col-lg-2">
+        Current Categories
+        @{
+            var categories = ViewData["AssociatedCategoryWeights"] as List<GradeTracker.Models.CategoryWeight>;
+            foreach(var category in categories)
+            {
+                <p>@category.categoryName - @category.categoryWeight</p>
+            }
+        }
+
+    </div>
 </div>
 
 <div class="row add-margin-top">
@@ -47,7 +86,46 @@
 </div>
 
 <script>
-    $(document).ready(function () {
-        //$('div').attr("style", "border: 1px solid");
+    $('.addCategoryButton').click(function () {
+        var currentWeightTotal = 0;
+        var courseId = @Model.courseId;
+        $.ajax({
+            type:"POST",
+            url: "/Gradebook/GetCurrentWeightTotal",
+            datatype: "text",
+            data: {courseId: courseId},
+            success: function(data) {
+                currentWeightTotal += parseInt(data, 10);
+                currentWeightTotal += parseInt($('#categoryWeightBox').val(), 10);
+                if(currentWeightTotal <= 100) {
+                    alert(currentWeightTotal);
+                    saveWeight();
+                }
+                else {
+                    alert("Cannot add category, weight total will be greater than 100.");
+                }
+            },
+            error: function(data) {
+                alert(data.statusText);
+            }
+        });
     });
+
+    function saveWeight() {
+        var courseId = @Model.courseId;
+        var categoryName = $('#categoryNameBox').val();
+        var categoryWeight = parseInt($('#categoryWeightBox').val(), 10);
+        $.ajax({
+            type: "POST",
+            url: "/Gradebook/SaveNewCategoryWeight",
+            datatype: "text",
+            data: {courseId: courseId, categoryName: categoryName, categoryWeight: categoryWeight},
+            success: function(data) {
+                alert(data);
+            },
+            error: function(data) {
+                alert(data.statusText);
+            }
+        });
+    };
 </script>

@@ -19,7 +19,7 @@ namespace GradeTracker.Models
         [Display(Name="Course Number")]
         [Required]
 		public string courseNumber {get; set;}
-		public Dictionary<String, Double> categories;
+        public List<CategoryWeight> categories { get; set; }
         public List<WorkItemModel> WorkItems { get; set; }
 	}
 }
