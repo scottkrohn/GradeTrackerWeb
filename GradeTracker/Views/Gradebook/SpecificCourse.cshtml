@@ -26,7 +26,7 @@
 
             <!-- Add WorkItem button -->
             <div class="col-md-4">
-                <a href="@Url.Action("AddWorkItem", "Gradebook", Model)" class="btn btn-primary">Add Work Item</a>
+                <a href="@Url.Action("AddWorkItem", "Gradebook", Model)" class="btn btn-primary" id="addWorkItemButton">Add Work Item</a>
             </div>
 
         <!-- list-group of WorkItems -->
@@ -52,7 +52,7 @@
                 var categories = ViewData["AssociatedCategoryWeights"] as List<GradeTracker.Models.CategoryWeight>;
                 if(categories.Count == 0)
                 {
-                    <p class="noCategoriesError">Please add your grading weight categories before adding work items to your course.</p>
+                    <p class="noCategoriesError">You must add grading weights totaling 100% before adding any work items.</p>
                 }
                 foreach(var category in categories)
                 {
@@ -93,15 +93,16 @@
 </div>
 
 <script>
+
+    $(document).ready(function() {
+        setAddWorkItemButtonState(); 
+    });
+
     // Called when the "Add New Category" button is clicked.
     $('.addCategoryButton').click(function () {
         // Check if either input box is empty.
         if($('#categoryNameBox').val() == "" || $('#categoryWeightBox').val() == "") {
             alert("Invalid input, try again.");
-        }
-        // Check that the weight value is a valid interger.
-        else if($('#categoryWeightBox').val() !== parseInt($('#categoryWeightBox').val(), 10)) {
-            alert("Weight value must be an integer between 1 and 100.")
         }
         else {
             var currentWeightTotal = 0;
@@ -115,7 +116,7 @@
                     currentWeightTotal += parseInt(data, 10);
                     currentWeightTotal += parseInt($('#categoryWeightBox').val(), 10);
                     if(currentWeightTotal <= 100) {
-                        saveWeight();
+                        saveWeight(currentWeightTotal);
                     }
                     else {
                         alert("Cannot add category, weight total will be greater than 100.");
@@ -129,7 +130,8 @@
 
     });
 
-    function saveWeight() {
+    // Make Ajax request to the GradebookController to add a new category weight.
+    function saveWeight(currentTotal) {
         var courseId = @Model.courseId;
         var categoryName = $('#categoryNameBox').val();
         var categoryWeight = parseInt($('#categoryWeightBox').val(), 10);
@@ -139,15 +141,41 @@
             datatype: "text",
             data: {courseId: courseId, categoryName: categoryName, categoryWeight: categoryWeight},
             success: function(data) {
+                // Hide no categories error.
                 if(document.getElementsByClassName("noCategoriesError") !== null) {
-                    $('.noCategoriesError').remove();
+                    $('.noCategoriesError').hide();
                 }
                 var newCategoryEntry =  "<div class='list-group-item'>" + data['categoryName'] + " - " + data['categoryWeight'] + " %</div>";
                 $('.categoryList').append(newCategoryEntry);
+
+                setAddWorkItemButtonState();
             },
             error: function(data) {
                 alert(data.statusText);
             }
         });
     };
+
+    // Checks if weight totals == 100, if so enable the "Add Work Item" button.
+    function setAddWorkItemButtonState() {
+        var courseId = @Model.courseId;
+        $.ajax({
+            type: "POST",
+            url: "/Gradebook/GetCurrentWeightTotal",
+            datatype: "text",
+            data: {courseId: courseId},
+            success: function(data) {
+                if(parseInt(data, 10) != 100) {
+                    $('#addWorkItemButton').hide();
+                } 
+                else {
+                    $('#addWorkItemButton').show();
+                }
+            },
+            error: function(data) {
+                alert("Error getting current weight total.")
+            }
+        });
+    }
+
 </script>
