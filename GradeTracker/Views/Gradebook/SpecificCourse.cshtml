@@ -17,60 +17,36 @@
     <!-- TODO: Add "Weighted Grade" label. -->
     <!-- TODO: Prevent adding WorkItem until weight categories have been setup. -->
 
+    <!-- WORK ITEMS LIST SECTION -->
     <div class="col-lg-5">
-        <div class="row">
             <!-- List Title -->
             <div class="col-md-8 add-margin-bottom">
-                <h3 style="display: inline;">Work Items</h3>
+                <h4 style="display: inline;">Work Items</h4>
             </div>
 
             <!-- Add WorkItem button -->
             <div class="col-md-4">
                 <a href="@Url.Action("AddWorkItem", "Gradebook", Model)" class="btn btn-primary">Add Work Item</a>
             </div>
-        </div>
-            
+
         <!-- list-group of WorkItems -->
-        <div class="list-group workItemGroup">
-            @{
-                var workItemList = ViewData["AssociatedWorkItems"] as List<GradeTracker.Models.WorkItemModel>;
-                foreach(var workItem in workItemList)
-                {
-                    <div class="workItemEntry col-md-12"><a href="#" class="list-group-item">@workItem.itemName</a></div>
+            <div class="list-group workItemGroup col-lg-12">
+                @{
+                    var workItemList = ViewData["AssociatedWorkItems"] as List<GradeTracker.Models.WorkItemModel>;
+                    foreach(var workItem in workItemList)
+                    {
+                        <div class="workItemEntry col-md-12"><a href="#" class="list-group-item">@workItem.itemName</a></div>
+                    }
                 }
-            }
-        </div>
+            </div>
     </div>
 
-    <div class="col-lg-5">
-        <div class="row">
-            <!-- List Title -->
-            <div class="col-md-6 add-margin-bottom">
-                <h3 style="display: inline;">Weight Categories</h3>
-            </div>
-
-            <!-- Add WorkItem button -->
-            <div class="col-md-3">
-                <a href="@Url.Action("AddCategoryWeight", "Gradebook", Model)" class="btn btn-primary">Edit Categories</a>
-            </div>
+    <!-- CURRENT WEIGHT CATEGORY SECTION -->
+    <div class="col-lg-3 categorySection">
+        <div class="col-sm-12 add-margin-bottom">
+            <h4 style="display: inline;">Current Categories</h4>
         </div>
-
-        <div class="form-horizontal">
-            <div class="col-md-12 form-group">
-                @Html.Label("Name", htmlAttributes: new { @class = "control-label col-md-2"})
-                @Html.TextBox("categoryNameBox", "", htmlAttributes: new { @class="form-control col-md-7"})
-            </div>
-            <div class="col-md-12 form-group">
-                @Html.Label("Weight", htmlAttributes: new { @class = "control-label col-md-2"})
-                @Html.TextBox("categoryWeightBox", "", htmlAttributes: new { @class="form-control col-md-7"})
-            </div>
-
-            <div class="btn btn-default addCategoryButton">Add New Category</div>
-        </div>
-    </div>
-
-    <div class="col-lg-2 categorySection">
-        <h4><u>Current Categories</u></h4>
+        <div class="col-sm-12">
         <div class="list-group categoryList">
             @{
                 var categories = ViewData["AssociatedCategoryWeights"] as List<GradeTracker.Models.CategoryWeight>;
@@ -81,8 +57,31 @@
 
             }
         </div>
-
+        </div>
     </div>
+
+    <!-- ADD WEIGHT CATEGORY SECTION -->
+    <div class="col-lg-4">
+            <div class="row">
+                <!-- List Title -->
+                <div class="col-md-6 add-margin-bottom">
+                    <h4 style="display: inline;">Weight Categories</h4>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="col-md-12 form-group">
+                    @Html.Label("Name", htmlAttributes: new { @class = "control-label"})
+                    @Html.TextBox("categoryNameBox", "", htmlAttributes: new { @class="form-control "})
+                </div>
+                <div class="col-md-12 form-group">
+                    @Html.Label("Weight", htmlAttributes: new { @class = "control-label"})
+                    @Html.TextBox("categoryWeightBox", "", htmlAttributes: new { @class="form-control"})
+                </div>
+
+                <div class="btn btn-default col-md-5 col-md-offset-2 addCategoryButton">Add New Category</div>
+            </div>
+        </div>
 </div>
 
 <div class="row add-margin-top">
