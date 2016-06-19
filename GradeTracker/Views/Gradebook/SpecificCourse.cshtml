@@ -50,6 +50,10 @@
         <div class="list-group categoryList">
             @{
                 var categories = ViewData["AssociatedCategoryWeights"] as List<GradeTracker.Models.CategoryWeight>;
+                if(categories.Count == 0)
+                {
+                    <p class="noCategoriesError">Please add your grading weight categories before adding work items to your course.</p>
+                }
                 foreach(var category in categories)
                 {
                     <div class="list-group-item">@category.categoryName - @category.categoryWeight %</div>
@@ -89,28 +93,40 @@
 </div>
 
 <script>
+    // Called when the "Add New Category" button is clicked.
     $('.addCategoryButton').click(function () {
-        var currentWeightTotal = 0;
-        var courseId = @Model.courseId;
-        $.ajax({
-            type:"POST",
-            url: "/Gradebook/GetCurrentWeightTotal",
-            datatype: "text",
-            data: {courseId: courseId},
-            success: function(data) {
-                currentWeightTotal += parseInt(data, 10);
-                currentWeightTotal += parseInt($('#categoryWeightBox').val(), 10);
-                if(currentWeightTotal <= 100) {
-                    saveWeight();
+        // Check if either input box is empty.
+        if($('#categoryNameBox').val() == "" || $('#categoryWeightBox').val() == "") {
+            alert("Invalid input, try again.");
+        }
+        // Check that the weight value is a valid interger.
+        else if($('#categoryWeightBox').val() !== parseInt($('#categoryWeightBox').val(), 10)) {
+            alert("Weight value must be an integer between 1 and 100.")
+        }
+        else {
+            var currentWeightTotal = 0;
+            var courseId = @Model.courseId;
+            $.ajax({
+                type:"POST",
+                url: "/Gradebook/GetCurrentWeightTotal",
+                datatype: "text",
+                data: {courseId: courseId},
+                success: function(data) {
+                    currentWeightTotal += parseInt(data, 10);
+                    currentWeightTotal += parseInt($('#categoryWeightBox').val(), 10);
+                    if(currentWeightTotal <= 100) {
+                        saveWeight();
+                    }
+                    else {
+                        alert("Cannot add category, weight total will be greater than 100.");
+                    }
+                },
+                error: function(data) {
+                    alert(data.statusText);
                 }
-                else {
-                    alert("Cannot add category, weight total will be greater than 100.");
-                }
-            },
-            error: function(data) {
-                alert(data.statusText);
-            }
-        });
+            });
+        }
+
     });
 
     function saveWeight() {
@@ -123,6 +139,9 @@
             datatype: "text",
             data: {courseId: courseId, categoryName: categoryName, categoryWeight: categoryWeight},
             success: function(data) {
+                if(document.getElementsByClassName("noCategoriesError") !== null) {
+                    $('.noCategoriesError').remove();
+                }
                 var newCategoryEntry =  "<div class='list-group-item'>" + data['categoryName'] + " - " + data['categoryWeight'] + " %</div>";
                 $('.categoryList').append(newCategoryEntry);
             },
