@@ -15,7 +15,9 @@
 
     <!-- TODO: Show sections for each cateogry and display the work items that have been added. -->
     <!-- TODO: Add "Weighted Grade" label. -->
-    <!-- TODO: Prevent adding WorkItem until weight categories have been setup. -->
+    <!-- TODO: Clear text boxes when a category is added. -->
+    <!-- TODO: Change error message on invalid category input to label instead of pop-up. -->
+
 
     <!-- WORK ITEMS LIST SECTION -->
     <div class="col-lg-5">
@@ -56,7 +58,7 @@
                 }
                 foreach(var category in categories)
                 {
-                    <div class="list-group-item">@category.categoryName - @category.categoryWeight %</div>
+                    <div class="list-group-item categoryEntry">@category.categoryName - @category.categoryWeight %<span class="remove-icon glyphicon glyphicon-remove-circle pull-right"></span></div>
                 }
 
             }
@@ -96,6 +98,10 @@
 
     $(document).ready(function() {
         setAddWorkItemButtonState(); 
+    });
+
+    $('.remove-icon').click(function() {
+        alert("test");
     });
 
     // Called when the "Add New Category" button is clicked.

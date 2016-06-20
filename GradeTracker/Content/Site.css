@@ -61,3 +61,12 @@ color:          #FFFFFF;
     color: red;
     font-size: small;
 }
+
+.remove-icon {
+    color: red;
+    display:none;
+}
+
+.categoryEntry:hover .remove-icon {
+    display: block;
+}
