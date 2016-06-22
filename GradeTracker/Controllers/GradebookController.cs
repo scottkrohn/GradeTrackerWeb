@@ -49,6 +49,12 @@ namespace GradeTracker.Controllers
             var result = db.CategoryWeights.SqlQuery(String.Format("SELECT * FROM CategoryWeights WHERE assocCourseId={0}", course.courseId));
             return result.ToList();
         }
+
+		private CategoryWeight GetCategory(int id)
+		{
+			var result = db.CategoryWeights.SqlQuery(String.Format("SELECT * FROM CategoryWeights WHERE categoryId={0}", id));
+			return result.First();
+		}
 		
         /*****************************************************************/
         
@@ -95,6 +101,26 @@ namespace GradeTracker.Controllers
 			{
 				return new JsonResult();
 			}
+		}
+
+		[HttpPost]
+		public bool DeleteCategoryWeight(int categoryId)
+		{
+			// Get the category from the database
+			try
+			{
+				CategoryWeight foundCategory = GetCategory(categoryId);
+				if(db.CategoryWeights.Remove(foundCategory) != null)
+				{
+					db.SaveChanges();
+					return true;
+				}
+			}
+			catch(Exception ex)
+			{
+				return false;
+			}
+			return false;
 		}
 
         public ActionResult SpecificCourse(CourseModel course)

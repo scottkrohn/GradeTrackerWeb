@@ -58,12 +58,13 @@
                 }
                 foreach(var category in categories)
                 {
-                    <div class="list-group-item categoryEntry">@category.categoryName - @category.categoryWeight %<span class="remove-icon glyphicon glyphicon-remove-circle pull-right"></span></div>
+                    <div class="list-group-item categoryEntry" data-id="@category.categoryId">@category.categoryName - @category.categoryWeight %<span class="remove-icon glyphicon glyphicon-remove-circle pull-right"></span></div>
                 }
 
             }
         </div>
         </div>
+        <div id="dialog-confirm"></div>
     </div>
 
     <!-- ADD WEIGHT CATEGORY SECTION -->
@@ -101,7 +102,20 @@
     });
 
     $('.remove-icon').click(function() {
-        alert("test");
+        var selectedCategoryId = $(this).parent().attr("data-id");
+        $.ajax({
+            type: "POST",
+            url: "/Gradebook/DeleteCategoryWeight",
+            datatype: "text",
+            data: {categoryId: selectedCategoryId},
+            success: function() {
+                alert("Deleted!");
+            },
+            error: function() {
+                alert("ERROR!");
+            }
+        });
+
     });
 
     // Called when the "Add New Category" button is clicked.
@@ -183,5 +197,7 @@
             }
         });
     }
+
+
 
 </script>
