@@ -9,7 +9,6 @@ namespace GradeTracker.Models
 	public class WorkItemModel
 	{
 		public int assocCourseId {get; set;}
-        [Key]
         [Display(Name ="Item Name")]
 		public string itemName {get; set;}
         [Display(Name="Weight Category")]
@@ -18,5 +17,7 @@ namespace GradeTracker.Models
 		public double pointsPossible {get; set;}
         [Display(Name="Points Earned")]
 		public double pointsEarned {get; set;}
+        [Key]
+		public int id {get; set; }
 	}
 }

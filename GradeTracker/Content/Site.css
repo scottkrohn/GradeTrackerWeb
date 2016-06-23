@@ -57,8 +57,18 @@ color:          #FFFFFF;
     color: #06394f;
 }
 
-.noCategoriesError {
+.error {
     color: red;
+    font-size: small;
+}
+
+.error-sm {
+    color: red;
+    font-size: x-small;
+}
+
+.success {
+    color: royalblue;
     font-size: small;
 }
 
@@ -70,3 +80,12 @@ color:          #FFFFFF;
 .categoryEntry:hover .remove-icon {
     display: block;
 }
+
+#footer{
+      position:fixed;
+      text-align: center;
+      width: 100%;
+      bottom:0;
+      border-top:1px solid #666;
+}
+

@@ -42,12 +42,11 @@
     </div>
     <div class="container body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - @ViewBag.ApplicationName</p>
-        </footer>
+        
     </div>
-
+<div id="footer">
+            <p>&copy; @DateTime.Now.Year - @ViewBag.ApplicationName</p>
+        </div >
     
     @RenderSection("scripts", required: false)
 </body>

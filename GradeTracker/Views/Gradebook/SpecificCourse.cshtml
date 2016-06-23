@@ -6,16 +6,15 @@
 <div class="row add-margin-top">
     <div class="col-md-6">
         <h2>@Model.courseCode @Model.courseNumber</h2>
-        <h4></h4>
+        @Html.ActionLink("Back to Courses", "Courses", ViewData["CurrentSemester"])
     </div>
 </div>
 <hr />
 
-<div class="row">
 
-    <!-- TODO: Show sections for each cateogry and display the work items that have been added. -->
+<div class="row add-margin-bottom">
+
     <!-- TODO: Add "Weighted Grade" label. -->
-    <!-- TODO: Clear text boxes when a category is added. -->
     <!-- TODO: Change error message on invalid category input to label instead of pop-up. -->
 
 
@@ -46,16 +45,14 @@
     <!-- CURRENT WEIGHT CATEGORY SECTION -->
     <div class="col-lg-3 categorySection">
         <div class="col-sm-12 add-margin-bottom">
-            <h4 style="display: inline;">Current Categories</h4>
+            <h4 style="display: inline;">Current Categories: <span id="weightTotalLabel"></span></h4>
         </div>
         <div class="col-sm-12">
         <div class="list-group categoryList">
             @{
                 var categories = ViewData["AssociatedCategoryWeights"] as List<GradeTracker.Models.CategoryWeight>;
-                if(categories.Count == 0)
-                {
-                    <p class="noCategoriesError">You must add grading weights totaling 100% before adding any work items.</p>
-                }
+                <!-- No categories error stays hidden until necessary -->
+                <p class="error" id="noCategoriesError" hidden>You must add grading weights totaling 100% before adding any work items.</p>
                 foreach(var category in categories)
                 {
                     <div class="list-group-item categoryEntry" data-id="@category.categoryId">@category.categoryName - @category.categoryWeight %<span class="remove-icon glyphicon glyphicon-remove-circle pull-right"></span></div>
@@ -88,20 +85,31 @@
 
                 <div class="btn btn-default col-md-5 col-md-offset-2 addCategoryButton">Add New Category</div>
             </div>
+            <div class="row text-center">
+                <div class="col-md-5 col-sm-offset-2 statusLabel">
+                    <div class="success" id="successLabel" style="float: left" hidden>Category Added.</div>
+                    <div class="error-sm" id="errorLabel" hidden></div>
+                </div>
+        </div> 
         </div>
+        
 </div>
 
-<div class="row add-margin-top">
-    @Html.ActionLink("Back to Courses", "Courses", ViewData["CurrentSemester"])
-</div>
+
 
 <script>
 
+    // Determine if there is 100% of categories added.
+    // If so, display the "Add Work Item" button.
     $(document).ready(function() {
+        if($('categoryList').children().length <= 1) {
+            $('.noCategoriesError').show();
+        }
         setAddWorkItemButtonState(); 
     });
 
-    $('.remove-icon').click(function() {
+    // Deletes a category entry from the database and removes the div for it.
+    $('.categoryList').on('click', '.remove-icon', function() {
         var selectedCategoryId = $(this).parent().attr("data-id");
         $.ajax({
             type: "POST",
@@ -109,7 +117,8 @@
             datatype: "text",
             data: {categoryId: selectedCategoryId},
             success: function() {
-                alert("Deleted!");
+                $('[data-id="' + selectedCategoryId + '"]').remove();
+                setAddWorkItemButtonState();
             },
             error: function() {
                 alert("ERROR!");
@@ -122,7 +131,7 @@
     $('.addCategoryButton').click(function () {
         // Check if either input box is empty.
         if($('#categoryNameBox').val() == "" || $('#categoryWeightBox').val() == "") {
-            alert("Invalid input, try again.");
+            $('.addErrorLabel').html("Error adding");
         }
         else {
             var currentWeightTotal = 0;
@@ -134,16 +143,27 @@
                 data: {courseId: courseId},
                 success: function(data) {
                     currentWeightTotal += parseInt(data, 10);
-                    currentWeightTotal += parseInt($('#categoryWeightBox').val(), 10);
-                    if(currentWeightTotal <= 100) {
-                        saveWeight(currentWeightTotal);
+                    // Check if input is a valid integer for Weight.
+                    if(Number.isInteger(parseInt($('#categoryWeightBox').val(), 10))) {
+                        currentWeightTotal += parseInt($('#categoryWeightBox').val(), 10);
+                        // Check if the new category weight value will cause the total to exceed 100%
+                        if(currentWeightTotal <= 100) {
+                            saveWeight(currentWeightTotal);
+                        }
+                        else {
+                            $("#errorLabel").html("Cannot add category, total weight will exceed 100%").show();
+                            $("#errorLabel").fadeOut(3000, function () {});
+                        }
                     }
                     else {
-                        alert("Cannot add category, weight total will be greater than 100.");
+                        $('#errorLabel').html("Invalid input, please try again.").show();
+                        $("#errorLabel").fadeOut(3000, function () {});
                     }
+
+                    
                 },
                 error: function(data) {
-                    alert(data.statusText);
+                    $('#errorLabel').html("Error adding");
                 }
             });
         }
@@ -155,20 +175,27 @@
         var courseId = @Model.courseId;
         var categoryName = $('#categoryNameBox').val();
         var categoryWeight = parseInt($('#categoryWeightBox').val(), 10);
+        
         $.ajax({
             type: "POST",
             url: "/Gradebook/SaveNewCategoryWeight",
             datatype: "text",
             data: {courseId: courseId, categoryName: categoryName, categoryWeight: categoryWeight},
             success: function(data) {
-                // Hide no categories error.
-                if(document.getElementsByClassName("noCategoriesError") !== null) {
-                    $('.noCategoriesError').hide();
-                }
-                var newCategoryEntry =  "<div class='list-group-item'>" + data['categoryName'] + " - " + data['categoryWeight'] + " %</div>";
+                var newCategoryEntry =  "<div class='list-group-item categoryEntry' data-id=" + data['categoryId'] + ">" + data['categoryName'] + " - " + data['categoryWeight'] + "<span class='remove-icon glyphicon glyphicon-remove-circle pull-right'></span> %</div>";
                 $('.categoryList').append(newCategoryEntry);
 
                 setAddWorkItemButtonState();
+
+                // Display success label
+                $("#successLabel").show();
+                $("#successLabel").fadeOut(3000, function() {
+                });
+
+
+                // Clear input boxes.
+                $('#categoryNameBox').val("");
+                $('#categoryWeightBox').val("");
             },
             error: function(data) {
                 alert(data.statusText);
@@ -185,11 +212,15 @@
             datatype: "text",
             data: {courseId: courseId},
             success: function(data) {
+                // Update the weight total displayed in the section header
+                $('#weightTotalLabel').html(parseInt(data,10) + "%");
                 if(parseInt(data, 10) != 100) {
                     $('#addWorkItemButton').hide();
+                    $('#noCategoriesError').show();
                 } 
                 else {
                     $('#addWorkItemButton').show();
+                    $('#noCategoriesError').hide();
                 }
             },
             error: function(data) {
@@ -197,7 +228,5 @@
             }
         });
     }
-
-
 
 </script>
