@@ -36,10 +36,13 @@
                     var workItemList = ViewData["AssociatedWorkItems"] as List<GradeTracker.Models.WorkItemModel>;
                     foreach(var workItem in workItemList)
                     {
-                        <div class="workItemEntry col-md-12 list-group-item">@workItem.itemName
+                        <div class="workItemEntry col-md-12" data-id="@workItem.categoryName">
+                            <a href="#" class="list-group-item clearfix">
+                            @workItem.itemName
                                 <span class="pull-right">@workItem.pointsEarned/@workItem.pointsPossible</span>
                                 <br />
-                                <span class="pull-left categorySubtitle">Homework</span>
+                                <span class="pull-left categorySubtitle">@workItem.categoryName</span>
+                                </a>
                         </div>
                     }
                 }
@@ -60,8 +63,10 @@
                 {
                     <div class="list-group-item categoryEntry" data-id="@category.categoryId">@category.categoryName - @category.categoryWeight %<span class="remove-icon glyphicon glyphicon-remove-circle pull-right"></span></div>
                 }
-
             }
+        </div>
+        <div class="col-md-12">
+            <p id="deleteCategoryError" class="error text-center"></p>
         </div>
     </div>
 
@@ -110,21 +115,53 @@
     // Deletes a category entry from the database and removes the div for it.
     $('.categoryList').on('click', '.remove-icon', function() {
         var selectedCategoryId = $(this).parent().attr("data-id");
+        // Attempt to delete a category. Will not succeed
+        // if the category is in use by a WorkItem
+        deleteCategoryAttempt(selectedCategoryId);
+    });
+
+
+    // Deletes the category with the matching categoryId
+    function deleteCategory(categoryId) {
         $.ajax({
             type: "POST",
             url: "/Gradebook/DeleteCategoryWeight",
             datatype: "text",
-            data: {categoryId: selectedCategoryId},
+            data: {categoryId: categoryId},
             success: function() {
-                $('[data-id="' + selectedCategoryId + '"]').remove();
+                $('[data-id="' + categoryId + '"]').remove();
                 setAddWorkItemButtonState();
             },
             error: function() {
                 alert("ERROR!");
             }
         });
+    }
 
-    });
+    function deleteCategoryAttempt(categoryId) {
+        var result = false;
+        $.ajax({
+            type: "POST",
+            url: "/Gradebook/CategoryInUse",
+            datatype: "text",
+            data: {categoryId: categoryId, courseId: @Model.courseId},
+            success: function(data) {
+
+                if(data["inUse"] == true) {
+                    $('#deleteCategoryError').html("You cannot delete that category, it's being used by one or more work items.").show();
+                    $('#deleteCategoryError').fadeOut(4000, function(){});
+                }
+                else {
+                    deleteCategory(categoryId);
+                }
+            },
+            error: function(data) {
+
+                alert("ERROR!");
+            }
+        });
+        return result;
+    }
 
     // Called when the "Add New Category" button is clicked.
     $('.addCategoryButton').click(function () {
@@ -156,8 +193,6 @@
                     else {
                         displayError("Invalid input, please try again");
                     }
-
-                    
                 },
                 error: function(data) {
                         displayError("Sometime went wrong when adding a category.");

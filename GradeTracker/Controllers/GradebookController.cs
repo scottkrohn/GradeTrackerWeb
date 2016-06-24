@@ -123,6 +123,30 @@ namespace GradeTracker.Controllers
 			return false;
 		}
 
+		[HttpPost]
+		public ActionResult CategoryInUse(int categoryId, int courseId)
+		{
+			var result = false;
+			try
+			{
+				CategoryWeight weight = GetCategory(categoryId);
+				List<WorkItemModel> workItems = GetWorkItemsForCourse(GetCourseById(courseId));
+				foreach(WorkItemModel workItem in workItems)
+				{
+					if(workItem.categoryName == weight.categoryName)
+					{
+						result = true;
+						break;
+					}
+				}
+			}
+			catch (Exception ex) {
+			}
+			return Json(new {inUse = result});
+		}
+
+
+
         public ActionResult SpecificCourse(CourseModel course)
         {
             ViewData["CurrentSemester"] = GetSemesterForCourse(course);
@@ -154,12 +178,6 @@ namespace GradeTracker.Controllers
             course.assocSemesterId = semester.semesterId;
             ViewData["CurrentSemester"] = semester;
             return View(course);
-        }
-
-        public ActionResult EditCategoryWeights(CourseModel course)
-        {
-            ViewData["CurrentCategoryWeights"] = GetCategoryWeightsForCourse(course);
-            return View();
         }
 
         [HttpPost]
