@@ -173,6 +173,7 @@ namespace GradeTracker.Controllers
             WorkItemModel workItem = new WorkItemModel();
             workItem.assocCourseId = course.courseId;
             ViewData["currentCourse"] = course;
+			ViewData["CategoryWeights"] = GetCategoryWeightsForCourse(course);
             return View(workItem);
         }
 

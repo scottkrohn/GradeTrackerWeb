@@ -15,7 +15,7 @@
 <div class="row add-margin-bottom">
 
     <!-- TODO: Add "Weighted Grade" label. -->
-    <!-- TODO: Change error message on invalid category input to label instead of pop-up. -->
+    <!-- Add "COMPLETE COURSE RESET" button -->
 
 
     <!-- WORK ITEMS LIST SECTION -->
@@ -36,7 +36,11 @@
                     var workItemList = ViewData["AssociatedWorkItems"] as List<GradeTracker.Models.WorkItemModel>;
                     foreach(var workItem in workItemList)
                     {
-                        <div class="workItemEntry col-md-12"><a href="#" class="list-group-item">@workItem.itemName</a></div>
+                        <div class="workItemEntry col-md-12 list-group-item">@workItem.itemName
+                                <span class="pull-right">@workItem.pointsEarned/@workItem.pointsPossible</span>
+                                <br />
+                                <span class="pull-left categorySubtitle">Homework</span>
+                        </div>
                     }
                 }
             </div>
@@ -47,8 +51,7 @@
         <div class="col-sm-12 add-margin-bottom">
             <h4 style="display: inline;">Current Categories: <span id="weightTotalLabel"></span></h4>
         </div>
-        <div class="col-sm-12">
-        <div class="list-group categoryList">
+        <div class="list-group categoryList col-sm-12">
             @{
                 var categories = ViewData["AssociatedCategoryWeights"] as List<GradeTracker.Models.CategoryWeight>;
                 <!-- No categories error stays hidden until necessary -->
@@ -60,8 +63,6 @@
 
             }
         </div>
-        </div>
-        <div id="dialog-confirm"></div>
     </div>
 
     <!-- ADD WEIGHT CATEGORY SECTION -->
@@ -94,8 +95,6 @@
         </div>
         
 </div>
-
-
 
 <script>
 
@@ -131,7 +130,7 @@
     $('.addCategoryButton').click(function () {
         // Check if either input box is empty.
         if($('#categoryNameBox').val() == "" || $('#categoryWeightBox').val() == "") {
-            $('.addErrorLabel').html("Error adding");
+            displayError("Invalid input, there's an empty textbox.");
         }
         else {
             var currentWeightTotal = 0;
@@ -151,24 +150,27 @@
                             saveWeight(currentWeightTotal);
                         }
                         else {
-                            $("#errorLabel").html("Cannot add category, total weight will exceed 100%").show();
-                            $("#errorLabel").fadeOut(3000, function () {});
+                            displayError("Cannot add category, total weight will exceed 100%");
                         }
                     }
                     else {
-                        $('#errorLabel').html("Invalid input, please try again.").show();
-                        $("#errorLabel").fadeOut(3000, function () {});
+                        displayError("Invalid input, please try again");
                     }
 
                     
                 },
                 error: function(data) {
-                    $('#errorLabel').html("Error adding");
+                        displayError("Sometime went wrong when adding a category.");
                 }
             });
         }
 
     });
+
+    function displayError(message){
+        $('#errorLabel').html(message).show();
+        $("#errorLabel").fadeOut(3000, function () {});
+    }
 
     // Make Ajax request to the GradebookController to add a new category weight.
     function saveWeight(currentTotal) {
