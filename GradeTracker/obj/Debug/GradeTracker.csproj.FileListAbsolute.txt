@@ -286,3 +286,4 @@ C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.Migra
 C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.csproj.GenerateResource.Cache
 C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.dll
 C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.pdb
+C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.csprojResolveAssemblyReference.cache

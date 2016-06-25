@@ -98,13 +98,14 @@
                 </div>
         </div> 
         </div>
-        
 </div>
 
 <script>
 
-    // Determine if there is 100% of categories added.
-    // If so, display the "Add Work Item" button.
+
+    /* 
+    * Checks if the total weight of all the categories added is 100%.
+    */ 
     $(document).ready(function() {
         if($('categoryList').children().length <= 1) {
             $('.noCategoriesError').show();
@@ -112,8 +113,11 @@
         setAddWorkItemButtonState(); 
     });
 
+    $()
+
     // Deletes a category entry from the database and removes the div for it.
     $('.categoryList').on('click', '.remove-icon', function() {
+
         var selectedCategoryId = $(this).parent().attr("data-id");
         // Attempt to delete a category. Will not succeed
         // if the category is in use by a WorkItem
@@ -138,6 +142,11 @@
         });
     }
 
+    /*
+    * Attempt to delete a category. Makes ajax call to GradebookController to checking
+    * if the category that we're trying to delete has been assigned to any work items.
+    * If it has, it won't delete the category. 
+    */
     function deleteCategoryAttempt(categoryId) {
         var result = false;
         $.ajax({
@@ -163,7 +172,12 @@
         return result;
     }
 
-    // Called when the "Add New Category" button is clicked.
+    /* 
+    * Called when the "Add New Category" button is clicked. Validates that the input is not empty,
+    * then makes an ajax call to the GradebookController to check the total values of the weights
+    * that have already been added to the course. If the new values will cause the total to exceed
+    * 100% then the category isn't added an and error is displayed. 
+    */
     $('.addCategoryButton').click(function () {
         // Check if either input box is empty.
         if($('#categoryNameBox').val() == "" || $('#categoryWeightBox').val() == "") {
@@ -202,12 +216,19 @@
 
     });
 
+    /*
+    * Display an error message for 3 seconds beneath submit button.
+    */
     function displayError(message){
         $('#errorLabel').html(message).show();
         $("#errorLabel").fadeOut(3000, function () {});
     }
 
-    // Make Ajax request to the GradebookController to add a new category weight.
+    /* 
+    * Make Ajax request to the GradebookController to add a new category weight. This function
+    * is called from the 'success' callback when the "Add Category" button is clicked. Therefore
+    * the input has been validated and can be added to the database. 
+    */
     function saveWeight(currentTotal) {
         var courseId = @Model.courseId;
         var categoryName = $('#categoryNameBox').val();
@@ -222,6 +243,7 @@
                 var newCategoryEntry =  "<div class='list-group-item categoryEntry' data-id=" + data['categoryId'] + ">" + data['categoryName'] + " - " + data['categoryWeight'] + "<span class='remove-icon glyphicon glyphicon-remove-circle pull-right'></span> %</div>";
                 $('.categoryList').append(newCategoryEntry);
 
+                // Check if this category puts the total at 100%
                 setAddWorkItemButtonState();
 
                 // Display success label
@@ -230,7 +252,7 @@
                 });
 
 
-                // Clear input boxes.
+                // Clear input boxes
                 $('#categoryNameBox').val("");
                 $('#categoryWeightBox').val("");
             },
@@ -240,7 +262,10 @@
         });
     };
 
-    // Checks if weight totals == 100, if so enable the "Add Work Item" button.
+    /* 
+    * Checks if weight totals equal 100, if so enable the "Add Work Item" button
+    * and removes the status messages telling the user they must add more categories.
+    */
     function setAddWorkItemButtonState() {
         var courseId = @Model.courseId;
         $.ajax({

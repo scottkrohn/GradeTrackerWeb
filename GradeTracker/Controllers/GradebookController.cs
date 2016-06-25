@@ -55,21 +55,15 @@ namespace GradeTracker.Controllers
 			var result = db.CategoryWeights.SqlQuery(String.Format("SELECT * FROM CategoryWeights WHERE categoryId={0}", id));
 			return result.First();
 		}
-		
         /*****************************************************************/
-        
-        // HTTP GET Request to view the Courses page
-        // Sends the selected SemesterModel to the page.
-        public ActionResult Courses(SemesterModel semester) 
-		{
-            var model = QueryCourses(String.Format("SELECT * FROM CourseModels WHERE assocSemesterId={0}", semester.semesterId));
-            ViewBag.CurrentTerm = semester.termName;
-            ViewBag.CurrentYear = semester.termYear;
-            ViewData["CurrentSemesterString"] = semester.termName.ToString() + " " + semester.termYear.ToString() ;
-            ViewData["CurrentSemester"] = semester;
-			return View(model);	
-		}
 
+
+        /**************************AJAX CALLS*****************************/
+
+		/*
+		 * Gets the cumulative total of all of the category weights that have
+		 * been added to the course with courseId.
+		 */ 
 		[HttpPost]
 		public int GetCurrentWeightTotal(int courseId)
 		{
@@ -82,6 +76,10 @@ namespace GradeTracker.Controllers
 			return total;
 		}
 
+		/*
+		 * Saves a new category weight into the database and returns the new weight as 
+		 * a Json object for the view to process/display.
+		 */
 		[HttpPost]
 		public JsonResult SaveNewCategoryWeight(int courseId, string categoryName, int categoryWeight)
 		{
@@ -103,6 +101,10 @@ namespace GradeTracker.Controllers
 			}
 		}
 
+		/*
+		 * Deletes a category weight from the database and returns true if the
+		 * weight was successfully deleted.
+		 */ 
 		[HttpPost]
 		public bool DeleteCategoryWeight(int categoryId)
 		{
@@ -123,6 +125,10 @@ namespace GradeTracker.Controllers
 			return false;
 		}
 
+		/*
+		 * Returns true if the category passed as an argument is in use, meaning a work
+		 * item has been assigned that category, for the course argument.
+		 */ 
 		[HttpPost]
 		public ActionResult CategoryInUse(int categoryId, int courseId)
 		{
@@ -144,9 +150,28 @@ namespace GradeTracker.Controllers
 			}
 			return Json(new {inUse = result});
 		}
+        /*****************************************************************/
+        
 
+        /***********************ROUTING FUNCTIONS*************************/
 
+        /* 
+		 * HTTP GET request to display a view with the courses that are 
+		 * associated with a given SemesterModel object.
+        */ 
+        public ActionResult Courses(SemesterModel semester) 
+		{
+            var model = QueryCourses(String.Format("SELECT * FROM CourseModels WHERE assocSemesterId={0}", semester.semesterId));
+            ViewBag.CurrentTerm = semester.termName;
+            ViewBag.CurrentYear = semester.termYear;
+            ViewData["CurrentSemesterString"] = semester.termName.ToString() + " " + semester.termYear.ToString() ;
+            ViewData["CurrentSemester"] = semester;
+			return View(model);	
+		}
 
+		/*
+		 * HTTP GET request to display a view for a specific CourseModel.
+		 */ 
         public ActionResult SpecificCourse(CourseModel course)
         {
             ViewData["CurrentSemester"] = GetSemesterForCourse(course);
@@ -155,14 +180,20 @@ namespace GradeTracker.Controllers
             return View(course);
         }
 
+		/*
+		 * HTTP GET that returns an error page.
+		 */ 
         public ActionResult Error(string errorMessage) 
         {
             // Serve the Error view with the error message passed as an object.
             return Content(errorMessage);
         }
 
-        // Adds a new SemesterModel to the database and associated it
-        // with the StudentModel object passed to the view.
+        /* 
+		 * HTTP GET request to display a view to get user input to add a
+		 * new SemesterModel object to the database and associate it with
+		 * a specific StudentModel.
+        */ 
 		public ActionResult AddSemester(StudentModel student)
 		{
 			SemesterModel semester = new SemesterModel();
@@ -170,8 +201,11 @@ namespace GradeTracker.Controllers
 			return View(semester);
 		}
 
-        // Adds a new CourseModel to the database and associated it
-        // with the SemesterModel object passed to the view.
+		/*
+		 * HTTP Get request to display a view to get user input to add a
+		 * new CourseModel to the database and associate it with a specific
+		 * SemesterModel object.
+		 */ 
         public ActionResult AddCourse(SemesterModel semester) 
         {
             CourseModel course = new CourseModel();
@@ -180,12 +214,11 @@ namespace GradeTracker.Controllers
             return View(course);
         }
 
-        [HttpPost]
-        public string SetupCategoryInputs(int count)
-        {
-            return count.ToString();
-        }
-
+		/*
+		 * HTTP GET request to display a view to get user input to add a
+		 * new WorkItemModel object to the database and associate it with
+		 * a specific CourseModel object.
+		 */ 
         public ActionResult AddWorkItem(CourseModel course)
         {
             WorkItemModel workItem = new WorkItemModel();
@@ -195,6 +228,11 @@ namespace GradeTracker.Controllers
             return View(workItem);
         }
 
+		/*
+		 * HTTP POST request to save the 'semester' argument into the database and
+		 * then save the database changes. Redirects back to the AccountHome page
+		 * for a logged in user.
+		 */ 
 		[HttpPost]
 		public ActionResult SaveNewSemester(SemesterModel semester)
 		{
@@ -206,7 +244,10 @@ namespace GradeTracker.Controllers
 			}	
 			return RedirectToAction("Error", "Gradebook", "Semester was not added.");
 		}
-
+		/*
+		 * HTTP POST request to save the 'course' argument into the database and then
+		 * save the database changes. Redirects back to the Courses view.
+		 */ 
         [HttpPost]
         public ActionResult SaveNewCourse(CourseModel course) {
             if(ModelState.IsValid) 
@@ -220,8 +261,10 @@ namespace GradeTracker.Controllers
             return RedirectToAction("Error", "Gradebook", "Course was not added.");
         }
 
-        
-
+		/*
+		 * HTTP POST request to save the 'workItem' argument into the database and then
+		 * save the database changes. Redirects back to the Specific Course view.
+		 */ 
         [HttpPost]
         public ActionResult SaveNewWorkItem(WorkItemModel workItem)
         {
@@ -234,6 +277,6 @@ namespace GradeTracker.Controllers
             }
             return RedirectToAction("Error", "Gradebook", "Work Item was not added.");
         }
-		
+        /*****************************************************************/
     }
 }
