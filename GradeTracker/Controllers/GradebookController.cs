@@ -174,7 +174,9 @@ namespace GradeTracker.Controllers
 		 */ 
         public ActionResult SpecificCourse(CourseModel course)
         {
-            ViewData["CurrentSemester"] = GetSemesterForCourse(course);
+			SemesterModel currentSemester = GetSemesterForCourse(course);
+            ViewData["CurrentSemester"] = currentSemester;
+            ViewData["CurrentSemesterString"] = currentSemester.termName.ToString() + " " + currentSemester.termYear.ToString() ;
             ViewData["AssociatedWorkItems"] = GetWorkItemsForCourse(course);
 			ViewData["AssociatedCategoryWeights"] = GetCategoryWeightsForCourse(course);
             return View(course);

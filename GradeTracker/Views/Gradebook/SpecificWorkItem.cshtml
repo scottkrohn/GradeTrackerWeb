@@ -1,12 +1,15 @@
 ﻿
 @{
     ViewBag.Title = "SpecificWorkItem";
-}
-
-<h2>SpecificWorkItem</h2>
-@{
     string code = (ViewData["AssociatedCourse"] as GradeTracker.Models.CourseModel).courseCode;
     string number = (ViewData["AssociatedCourse"] as GradeTracker.Models.CourseModel).courseNumber;
 }
-@Html.ActionLink(String.Format("Back to {0} {1}", code, number), "SpecificCourse", ViewData["AssociatedCourse"])
+<div class="row add-margin-top">
+    <div class="col-md-6">
+        <h2>@Model.itemName</h2>
+        <h4>@code @number</h4>
+        @Html.ActionLink(String.Format("Back to {0} {1}", code, number), "SpecificCourse", ViewData["AssociatedCourse"])
+    </div>
+</div>
+
 
