@@ -18,19 +18,33 @@
 <!--Main content area. -->
 <div class="row">
     <div class="col-md-5">
-            
-            <div class="col-md-5">
-                <h4>Score <span class="btn btn-sm btn-info editScoreBtn">Edit</span></h4>
+            <div class="col-md-5" id="scoreColumn">
+                <div class="col-md-12">
+                    <h4>Score <span class="btn btn-sm btn-info" id="scoreEditButton">Edit</span></h4>
+                </div>
+                <div class="col-md-12 bg-info">
+                    <p class="lead" id="scoreLabel">@Model.pointsEarned/@Model.pointsPossible</p>
+                </div>
             </div>
-            <div class="col-md-offset-1 col-md-6">
-                <h4>Category Weight <span class="btn btn-sm btn-info editCategoryBtn">Edit</span></h4>
+            <div class="col-md-offset-1 col-md-6" id="categoryColumn">
+                <div class="col-md-12">
+                    <h4>Weight <span class="btn btn-sm btn-info" id="categoryEditButton">Edit</span></h4>
+                </div>
+                <div class="col-md-12 bg-info">
+                    <p class="lead" id="weightLabel">@weightCategory: @weightValue%</p>
+                </div>
             </div>
-            <p class="col-md-5 bg-info lead">@Model.pointsEarned/@Model.pointsPossible</p>
-            <p class="col-md-5 col-md-offset-1 bg-info lead">@weightCategory: @weightValue%</p>
 
     </div>
 </div>
 
+<script>
+
+    $('#scoreColumn').on('click', '#scoreEditButton', function () {
+        // TODO: Display input boxes when edit is clicked.
+    });
+
+</script>
         
 
 
