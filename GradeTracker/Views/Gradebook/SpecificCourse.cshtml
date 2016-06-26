@@ -35,7 +35,7 @@
                     foreach(var workItem in workItemList)
                     {
                         <div class="workItemEntry col-md-12" data-id="@workItem.categoryName">
-                            <a href="#" class="list-group-item clearfix">
+                            <a href="@Url.Action("SpecificWorkItem", "Gradebook", workItem)" class="list-group-item clearfix">
                             @workItem.itemName
                                 <span class="pull-right">@workItem.pointsEarned/@workItem.pointsPossible</span>
                                 <br />

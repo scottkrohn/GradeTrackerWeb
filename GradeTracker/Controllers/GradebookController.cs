@@ -180,6 +180,12 @@ namespace GradeTracker.Controllers
             return View(course);
         }
 
+		public ActionResult SpecificWorkItem(WorkItemModel workItem)
+		{
+			ViewData["AssociatedCourse"] = GetCourseById(workItem.assocCourseId);
+			return View(workItem);
+		}
+
 		/*
 		 * HTTP GET that returns an error page.
 		 */ 

@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewBag.Title = "SpecificWorkItem";
+}
+
+<h2>SpecificWorkItem</h2>
+@{
+    string code = (ViewData["AssociatedCourse"] as GradeTracker.Models.CourseModel).courseCode;
+    string number = (ViewData["AssociatedCourse"] as GradeTracker.Models.CourseModel).courseNumber;
+}
+@Html.ActionLink(String.Format("Back to {0} {1}", code, number), "SpecificCourse", ViewData["AssociatedCourse"])
+
