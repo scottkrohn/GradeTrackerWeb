@@ -50,9 +50,17 @@ namespace GradeTracker.Controllers
             return result.ToList();
         }
 
-		private CategoryWeight GetCategory(int id)
+		// Get a CategoryWeight object with an id matching the function argument.
+		private CategoryWeight GetCategoryWeight(int id)
 		{
 			var result = db.CategoryWeights.SqlQuery(String.Format("SELECT * FROM CategoryWeights WHERE categoryId={0}", id));
+			return result.First();
+		}
+
+		// Get a CategoryWeight object for a course with a specific name.
+		private CategoryWeight GetCategoryWeight(string categoryName, int courseId)
+		{
+			var result = db.CategoryWeights.SqlQuery(String.Format("SELECT * FROM CategoryWeights WHERE assocCourseId={0} AND categoryName='{1}'", courseId, categoryName));
 			return result.First();
 		}
         /*****************************************************************/
@@ -111,7 +119,7 @@ namespace GradeTracker.Controllers
 			// Get the category from the database
 			try
 			{
-				CategoryWeight foundCategory = GetCategory(categoryId);
+				CategoryWeight foundCategory = GetCategoryWeight(categoryId);
 				if(db.CategoryWeights.Remove(foundCategory) != null)
 				{
 					db.SaveChanges();
@@ -135,7 +143,7 @@ namespace GradeTracker.Controllers
 			var result = false;
 			try
 			{
-				CategoryWeight weight = GetCategory(categoryId);
+				CategoryWeight weight = GetCategoryWeight(categoryId);
 				List<WorkItemModel> workItems = GetWorkItemsForCourse(GetCourseById(courseId));
 				foreach(WorkItemModel workItem in workItems)
 				{
@@ -182,9 +190,15 @@ namespace GradeTracker.Controllers
             return View(course);
         }
 
+		/*
+		 * HTTP GET request to display a view for a specific WorkItem.
+		 */ 
 		public ActionResult SpecificWorkItem(WorkItemModel workItem)
 		{
-			ViewData["AssociatedCourse"] = GetCourseById(workItem.assocCourseId);
+			CourseModel assocCourse = GetCourseById(workItem.assocCourseId);
+			CategoryWeight assocWeight = GetCategoryWeight(workItem.categoryName, assocCourse.courseId);
+			ViewData["AssociatedCourse"] = assocCourse;
+			ViewData["AssociatedCategoryWeight"] = assocWeight;	
 			return View(workItem);
 		}
 
