@@ -63,10 +63,28 @@ namespace GradeTracker.Controllers
 			var result = db.CategoryWeights.SqlQuery(String.Format("SELECT * FROM CategoryWeights WHERE assocCourseId={0} AND categoryName='{1}'", courseId, categoryName));
 			return result.First();
 		}
+
+		private WorkItemModel GetWorkItemById(int id)
+		{
+			var result = db.WorkItemModels.SqlQuery(String.Format("SELECT * from WorkItemModels WHERE id={0}", id));
+			return result.First();
+		} 
+
         /*****************************************************************/
 
 
         /**************************AJAX CALLS*****************************/
+
+		[HttpPost]
+		public JsonResult EditWorkItem(int id, int earned , int possible)
+		{
+			WorkItemModel foundWorkItem = GetWorkItemById(id);
+			foundWorkItem.pointsEarned = earned;
+			foundWorkItem.pointsPossible = possible;
+			db.Entry(foundWorkItem).State = System.Data.Entity.EntityState.Modified;
+			db.SaveChanges();
+			return Json(foundWorkItem);
+		}
 
 		/*
 		 * Gets the cumulative total of all of the category weights that have

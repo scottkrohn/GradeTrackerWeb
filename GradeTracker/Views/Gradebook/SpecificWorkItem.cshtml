@@ -16,33 +16,100 @@
 
 <hr />
 <!--Main content area. -->
-<div class="row">
-    <div class="col-md-5">
+<div class="row" id="bodyContentArea">
+    <div class="col-md-5" id="scoreDisplayArea">
             <div class="col-md-5" id="scoreColumn">
                 <div class="col-md-12">
-                    <h4>Score <span class="btn btn-sm btn-info" id="scoreEditButton">Edit</span></h4>
+                    <h4>Score <span class="btn btn-sm btn-info" id="scoreEditButton">Edit</span></h4> 
+                    
                 </div>
-                <div class="col-md-12 bg-info">
-                    <p class="lead" id="scoreLabel">@Model.pointsEarned/@Model.pointsPossible</p>
+                <div class="col-md-12 bg-info" id="scoreSection">
+                    <p class="lead" id="scoreLabel" >@Model.pointsEarned/@Model.pointsPossible</p>
                 </div>
+                <div class="success text-center" id="successLabel" hidden>New score saved!</div>
+
+                <div class="col-md-12" id="scoreEditSection" hidden>
+                    <div class="form-horizontal" id="scoreEditForm">
+                        <div class="form-group">
+                            @Html.Label("Points Earned")
+                            @Html.TextBox("pointsEarnedBox", "", htmlAttributes: new { @class = "form-control", @type="number"})
+                            @Html.Label("Points Possible", htmlAttributes: new {@class="add-margin-top" })
+                            @Html.TextBox("pointsPossibleBox", "", htmlAttributes: new { @class = "form-control", @type="number"})
+                            <div class="btn btn-success add-margin-top col-md-5" id="saveScoreButton">Save</div>
+                            <div class="btn btn-warning add-margin-top col-md-5 col-md-offset-2" id="cancelScoreEditButton">Cancel</div>
+                            <div class="error text-center" id="errorLabel" hidden>Something went wrong, try again.</div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="col-md-offset-1 col-md-6" id="categoryColumn">
                 <div class="col-md-12">
                     <h4>Weight <span class="btn btn-sm btn-info" id="categoryEditButton">Edit</span></h4>
                 </div>
-                <div class="col-md-12 bg-info">
+                <div class="col-md-12 bg-info" id="categorySection">
                     <p class="lead" id="weightLabel">@weightCategory: @weightValue%</p>
                 </div>
-            </div>
 
+                <div class="col-md-12" id="categoryEditSection">
+
+                </div>
+            </div>
     </div>
+
 </div>
 
 <script>
 
-    $('#scoreColumn').on('click', '#scoreEditButton', function () {
-        // TODO: Display input boxes when edit is clicked.
+    $(document).ready(function() {
+
+        $('#pointsEarnedBox').val(@Model.pointsEarned);
+        $('#pointsPossibleBox').val(@Model.pointsPossible);
     });
+
+    $('#scoreColumn').on('click', '#scoreEditButton', function () {
+        toggleScoreSection();
+    });
+
+
+    /*
+        TODO: Still need to address problem of page refresh reloading the wrong data.
+    */
+    $('#saveScoreButton').click(function () {
+        var pointsEarned = $('#pointsEarnedBox').val();
+        var pointsPossible = $('#pointsPossibleBox').val();
+        $.ajax({
+            type: "POST",
+            datatype: "test",
+            url: "/Gradebook/EditWorkItem",
+            data: {id: @Model.id, earned: pointsEarned, possible: pointsPossible},
+            success: function(data) {
+                // Update the displayed data.
+                $('#scoreLabel').html(data["pointsEarned"] + "/" + data["pointsPossible"]);
+                // Update the textbox if the user edits again
+                $('#pointsEarnedBox').val(data["pointsEarned"]);
+                $('#pointsPossibleBox').val(data["pointsPossible"]);
+
+                $('#successLabel').show();
+                $('#successLabel').fadeOut(2000, function(){});
+                $('#scoreEditSection').hide();
+                $('#scoreSection').fadeIn(2000, function(){});
+            },
+            error(data) {
+                $('#errorLabel').show();
+                $('#errorLabel').fadeOut(3000, function(){});
+            }
+        });
+    });
+
+    $('#cancelScoreEditButton').click(function () {
+        toggleScoreSection();
+    });
+
+    function toggleScoreSection() {
+        $('#scoreSection').toggle();
+        $('#scoreEditSection').toggle();
+    }
 
 </script>
         
