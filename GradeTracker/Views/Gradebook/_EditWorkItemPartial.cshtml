@@ -1,0 +1,44 @@
+﻿@model GradeTracker.Models.WorkItemModel
+@{
+    ViewBag.Title = "_EditWorkItemPartial";
+    string weightCategory = (@ViewData["AssociatedCategoryWeight"] as GradeTracker.Models.CategoryWeight).categoryName;
+    int weightValue = (@ViewData["AssociatedCategoryWeight"] as GradeTracker.Models.CategoryWeight).categoryWeight;
+}
+
+            <div class="col-md-5" id="scoreColumn">
+                <div class="col-md-12">
+                    <h4>Score <span class="btn btn-sm btn-info" id="scoreEditButton">Edit</span></h4> 
+                    
+                </div>
+                <div class="col-md-12 bg-info" id="scoreSection">
+                    <p class="lead" id="scoreLabel" >@Model.pointsEarned/@Model.pointsPossible</p>
+                </div>
+                <div class="success text-center" id="successLabel" hidden>New score saved!</div>
+
+                <div class="col-md-12" id="scoreEditSection" hidden>
+                    <div class="form-horizontal" id="scoreEditForm">
+                        <div class="form-group">
+                            @Html.Label("Points Earned")
+                            @Html.TextBox("pointsEarnedBox", Model.pointsEarned, htmlAttributes: new { @class = "form-control", @type="number"})
+                            @Html.Label("Points Possible", htmlAttributes: new {@class="add-margin-top" })
+                            @Html.TextBox("pointsPossibleBox", Model.pointsPossible, htmlAttributes: new { @class = "form-control", @type="number"})
+                            <div class="btn btn-success add-margin-top col-md-5" id="saveScoreButton">Save</div>
+                            <div class="btn btn-warning add-margin-top col-md-5 col-md-offset-2" id="cancelScoreEditButton">Cancel</div>
+                            <div class="error text-center" id="errorLabel" hidden>Something went wrong, try again.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-offset-1 col-md-6" id="categoryColumn">
+                <div class="col-md-12">
+                    <h4>Weight <span class="btn btn-sm btn-info" id="categoryEditButton">Edit</span></h4>
+                </div>
+                <div class="col-md-12 bg-info" id="categorySection">
+                    <p class="lead" id="weightLabel">@weightCategory: @weightValue%</p>
+                </div>
+
+                <div class="col-md-12" id="categoryEditSection">
+
+                </div>
+            </div>

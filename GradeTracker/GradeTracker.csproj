@@ -308,6 +308,7 @@
     <Content Include="Views\Gradebook\AddWorkItem.cshtml" />
     <Content Include="Views\Gradebook\AddWeights.cshtml" />
     <Content Include="Views\Gradebook\SpecificWorkItem.cshtml" />
+    <Content Include="Views\Gradebook\_EditWorkItemPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

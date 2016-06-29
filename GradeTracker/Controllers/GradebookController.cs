@@ -76,14 +76,18 @@ namespace GradeTracker.Controllers
         /**************************AJAX CALLS*****************************/
 
 		[HttpPost]
-		public JsonResult EditWorkItem(int id, int earned , int possible)
+		public PartialViewResult EditWorkItem(int id, int earned , int possible)
 		{
 			WorkItemModel foundWorkItem = GetWorkItemById(id);
 			foundWorkItem.pointsEarned = earned;
 			foundWorkItem.pointsPossible = possible;
 			db.Entry(foundWorkItem).State = System.Data.Entity.EntityState.Modified;
 			db.SaveChanges();
-			return Json(foundWorkItem);
+			CourseModel assocCourse = GetCourseById(foundWorkItem.assocCourseId);
+			CategoryWeight assocWeight = GetCategoryWeight(foundWorkItem.categoryName, assocCourse.courseId);
+			ViewData["AssociatedCategoryWeight"] = assocWeight;
+			return PartialView("_EditWorkItemPartial", foundWorkItem);
+		//	return Json(foundWorkItem);
 		}
 
 		/*
