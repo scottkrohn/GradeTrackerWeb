@@ -20,7 +20,6 @@
     <div class="col-md-5" id="scoreDisplayArea">
         @Html.Partial("_EditWorkItemPartial")
     </div>
-
 </div>
 
 <script>
@@ -30,13 +29,9 @@
         $('#pointsPossibleBox').val(@Model.pointsPossible);
     });
 
-    $('#scoreDisplayArea').on('click', '#scoreEditButton', function () {
-        
-        toggleScoreSection();
-    });
-
     /*
         TODO: Still need to address problem of page refresh reloading the wrong data.
+        Send ajax request to save the new score in the database.
     */
     $('#scoreDisplayArea').on('click', '#saveScoreButton', function () {
         var pointsEarned = $('#pointsEarnedBox').val();
@@ -44,12 +39,12 @@
         $.ajax({
             type: "POST",
             datatype: 'html',
-            url: "/Gradebook/EditWorkItem",
+            url: "/Gradebook/EditWorkItemScore",
             data: {id: @Model.id, earned: pointsEarned, possible: pointsPossible},
             success: function(data) {
                 $('#scoreDisplayArea').html(data);
-                $('#successLabel').show();
-                $('#successLabel').fadeOut(1000, function(){});
+                $('#scoreSuccessLabel').show();
+                $('#scoreSuccessLabel').fadeOut(1000, function(){});
                 $('#scoreEditSection').hide();
             },
             error(data) {
@@ -60,14 +55,27 @@
         });
     });
 
-    $('#cancelScoreEditButton').click(function () {
-        toggleScoreSection();
+    /*
+    * Send ajax request to save the new selected category in the database.
+    */
+    $('#scoreDisplayArea').on('click', '#saveCategoryButton', function () {
+        var name = $('#categoryList').val();
+        $.ajax({
+            type: "POST",
+            datatype: "html",
+            url: "/Gradebook/EditWorkItemCategory",
+            data: {id: @Model.id, categoryName: name},
+            success: function(data) {
+                $('#scoreDisplayArea').html(data);
+                $('#categorySuccessLabel').show();
+                $('#categorySuccessLabel').fadeOut(1000, function(){});
+            },
+            error: function(data) {
+                alert("Error");
+            }
+        })
     });
 
-    function toggleScoreSection() {
-        $('#scoreSection').toggle();
-        $('#scoreEditSection').toggle();
-    }
 
 </script>
         

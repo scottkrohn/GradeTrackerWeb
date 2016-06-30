@@ -76,7 +76,15 @@ namespace GradeTracker.Controllers
         /**************************AJAX CALLS*****************************/
 
 		[HttpPost]
-		public PartialViewResult EditWorkItem(int id, int earned , int possible)
+		public JsonResult GetCategoriesForCourse(int courseId)
+		{
+			CourseModel course = GetCourseById(courseId);
+			List<CategoryWeight> categories = GetCategoryWeightsForCourse(course);
+			return Json(categories);
+		}
+
+		[HttpPost]
+		public PartialViewResult EditWorkItemScore(int id, int earned , int possible)
 		{
 			WorkItemModel foundWorkItem = GetWorkItemById(id);
 			foundWorkItem.pointsEarned = earned;
@@ -87,7 +95,18 @@ namespace GradeTracker.Controllers
 			CategoryWeight assocWeight = GetCategoryWeight(foundWorkItem.categoryName, assocCourse.courseId);
 			ViewData["AssociatedCategoryWeight"] = assocWeight;
 			return PartialView("_EditWorkItemPartial", foundWorkItem);
-		//	return Json(foundWorkItem);
+		}
+
+		public PartialViewResult EditWorkItemCategory(int id, string categoryName)
+		{
+			WorkItemModel foundWorkItem = GetWorkItemById(id);
+			foundWorkItem.categoryName = categoryName;
+			db.Entry(foundWorkItem).State = System.Data.Entity.EntityState.Modified;
+			db.SaveChanges();
+			CourseModel assocCourse = GetCourseById(foundWorkItem.assocCourseId);
+			CategoryWeight assocWeight = GetCategoryWeight(foundWorkItem.categoryName, assocCourse.courseId);
+			ViewData["AssociatedCategoryWeight"] = assocWeight;
+			return PartialView("_EditWorkItemPartial", foundWorkItem);
 		}
 
 		/*

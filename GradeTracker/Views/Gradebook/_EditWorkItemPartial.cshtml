@@ -5,40 +5,112 @@
     int weightValue = (@ViewData["AssociatedCategoryWeight"] as GradeTracker.Models.CategoryWeight).categoryWeight;
 }
 
-            <div class="col-md-5" id="scoreColumn">
-                <div class="col-md-12">
-                    <h4>Score <span class="btn btn-sm btn-info" id="scoreEditButton">Edit</span></h4> 
-                    
-                </div>
-                <div class="col-md-12 bg-info" id="scoreSection">
-                    <p class="lead" id="scoreLabel" >@Model.pointsEarned/@Model.pointsPossible</p>
-                </div>
-                <div class="success text-center" id="successLabel" hidden>New score saved!</div>
+<!-- Score Column -->
+<div class="col-md-5" id="scoreColumn">
+    <div class="col-md-12">
+        <h4>Score <span class="btn btn-sm btn-info" id="scoreEditButton">Edit</span></h4> 
+    </div>
 
-                <div class="col-md-12" id="scoreEditSection" hidden>
-                    <div class="form-horizontal" id="scoreEditForm">
-                        <div class="form-group">
-                            @Html.Label("Points Earned")
-                            @Html.TextBox("pointsEarnedBox", Model.pointsEarned, htmlAttributes: new { @class = "form-control", @type="number"})
-                            @Html.Label("Points Possible", htmlAttributes: new {@class="add-margin-top" })
-                            @Html.TextBox("pointsPossibleBox", Model.pointsPossible, htmlAttributes: new { @class = "form-control", @type="number"})
-                            <div class="btn btn-success add-margin-top col-md-5" id="saveScoreButton">Save</div>
-                            <div class="btn btn-warning add-margin-top col-md-5 col-md-offset-2" id="cancelScoreEditButton">Cancel</div>
-                            <div class="error text-center" id="errorLabel" hidden>Something went wrong, try again.</div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Score Display Section -->
+    <div class="col-md-12 bg-info" id="scoreSection">
+        <p class="lead" id="scoreLabel" >@Model.pointsEarned/@Model.pointsPossible</p>
+    </div>
+    <div class="success text-center" id="scoreSuccessLabel" hidden>New score saved!</div>
 
+    <!-- Score Edit Section -->
+    <div class="col-md-12" id="scoreEditSection" hidden>
+        <div class="form-horizontal" id="scoreEditForm">
+            <div class="form-group">
+                @Html.Label("Points Earned")
+                @Html.TextBox("pointsEarnedBox", Model.pointsEarned, htmlAttributes: new { @class = "form-control", @type="number"})
+                @Html.Label("Points Possible", htmlAttributes: new {@class="add-margin-top" })
+                @Html.TextBox("pointsPossibleBox", Model.pointsPossible, htmlAttributes: new { @class = "form-control", @type="number"})
+                <div class="btn btn-success add-margin-top col-md-5" id="saveScoreButton">Save</div>
+                <div class="btn btn-warning add-margin-top col-md-5 col-md-offset-2" id="cancelScoreEditButton">Cancel</div>
+                <div class="error text-center" id="errorLabel" hidden>Something went wrong, try again.</div>
             </div>
-            <div class="col-md-offset-1 col-md-6" id="categoryColumn">
-                <div class="col-md-12">
-                    <h4>Weight <span class="btn btn-sm btn-info" id="categoryEditButton">Edit</span></h4>
-                </div>
-                <div class="col-md-12 bg-info" id="categorySection">
-                    <p class="lead" id="weightLabel">@weightCategory: @weightValue%</p>
-                </div>
+        </div>
+    </div>
 
-                <div class="col-md-12" id="categoryEditSection">
+</div>
 
-                </div>
-            </div>
+<!-- Category Column -->
+<div class="col-md-offset-1 col-md-6" id="categoryColumn">
+    <div class="col-md-12">
+        <h4>Weight <span class="btn btn-sm btn-info" id="categoryEditButton">Edit</span></h4>
+    </div>
+
+    <!-- Category Display Section -->
+    <div class="col-md-12 bg-info" id="categorySection">
+        <p class="lead" id="weightLabel" data-category-name="@weightCategory">@weightCategory: @weightValue%</p>
+    </div>
+    <div class="success text-center" id="categorySuccessLabel" hidden>New category saved!</div>
+
+    <!-- Category Edit Section -->
+    <div class="col-md-12" id="categoryEditSection" hidden>
+        <div class="form-group">
+            @Html.Label("Category", htmlAttributes: new {@class="control-label" })
+            @Html.DropDownList("categoryList", new List<SelectListItem>(), htmlAttributes: new {@class = "form-control" })
+            <div class="btn btn-success add-margin-top col-md-5" id="saveCategoryButton">Save</div>
+            <div class="btn btn-warning add-margin-top col-md-5 col-md-offset-2" id="cancelCategoryEditButton">Cancel</div>
+            <div class="error text-center" id="errorLabel" hidden>Something went wrong, try again.</div>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+
+    /*
+    * Populate the dropdown list of categories upon document load.
+    */
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Gradebook/GetCategoriesForCourse",
+            type: "POST",
+            datatype: "json",
+            data: {courseId: @Model.assocCourseId},
+            success: function(data) {
+                $.each(data, function(index, element) {
+                    $('#categoryList').append(new Option(element.categoryName + " - " + element.categoryWeight + "%", element.categoryName));
+                })
+                // Set the default drop down option as the current weight category.
+                $('#categoryList option').prop('selected', false).filter(function() {
+                    return $(this).val() == $('#weightLabel').attr('data-category-name')
+                }).prop('selected', true);
+
+            },
+            error: function(data) {
+                alert("error");
+            }
+        });
+    });
+
+     $('#scoreColumn').on('click', '#scoreEditButton', function () {
+        toggleScoreSection();
+    });
+
+    $('#scoreColumn').on('click', '#cancelScoreEditButton', function() {
+        toggleScoreSection();
+    })
+
+    $('#categoryColumn').on('click', '#categoryEditButton', function () {
+        toggleCategorySection();
+    });
+
+    $('#categoryColumn').on('click', '#cancelCategoryEditButton', function () {
+        toggleCategorySection();
+    });
+
+    function toggleScoreSection() {
+        $('#scoreSection').toggle();
+        $('#scoreEditSection').toggle();
+    }
+
+    function toggleCategorySection() {
+        $('#categorySection').toggle();
+        $('#categoryEditSection').toggle();
+    }
+
+
+</script>
