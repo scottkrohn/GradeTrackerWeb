@@ -76,6 +76,25 @@ namespace GradeTracker.Controllers
         /**************************AJAX CALLS*****************************/
 
 		[HttpPost]
+		public JsonResult DeleteWorkItem(int id)
+		{
+			try
+			{
+				WorkItemModel workItem = GetWorkItemById(id);
+				if(db.WorkItemModels.Remove(workItem) != null)
+				{
+					db.SaveChanges();
+					return Json(new {result = true});
+				}
+			}
+			catch(Exception ex)
+			{
+				return Json(new {result = false});
+			}
+			return Json(new {result = false});
+		}
+
+		[HttpPost]
 		public JsonResult GetCategoriesForCourse(int courseId)
 		{
 			CourseModel course = GetCourseById(courseId);
