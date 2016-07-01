@@ -9,6 +9,8 @@
         <h4>@ViewData["CurrentSemesterString"]</h4>
         @Html.ActionLink("Back to Courses", "Courses", ViewData["CurrentSemester"])
     </div>
+    <div class="col-md-6 add-margin-top" id="weightedGradeDisplayArea">
+    </div>
 </div>
 <hr />
 <div class="row">
@@ -69,7 +71,7 @@
     </div>
 
     <!-- ADD WEIGHT CATEGORY SECTION -->
-    <div class="col-lg-4">
+    <div class="col-lg-4" id="addCategorySection">
             <div class="row">
                 <!-- List Title -->
                 <div class="col-md-6 add-margin-bottom">
@@ -95,7 +97,23 @@
                     <div class="error-sm" id="errorLabel" hidden></div>
                 </div>
         </div> 
+    </div>
+
+    <!-- Grade Display Section -->
+    <div class="col-lg-12" id="categoryGradeSection">
+        <!-- Section Title -->
+        <div class="col-md-12 add-margin-bottom">
+            <h4 style="display: inline;">Overall Grade Breakdown</h4>
         </div>
+
+        <div class="col-md-6" id="overallCategoryGradeSection">
+            <h5>Overall Category Grades</h5>
+            <div id="categoryGradeList" class="list-group">
+                <!-- Populated by Jquery -->
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -108,8 +126,70 @@
         if($('categoryList').children().length <= 1) {
             $('.noCategoriesError').show();
         }
-        setAddWorkItemButtonState(); 
+        setAddWorkItemButtonState();
+        loadOverallCategoryGrades();
+        loadWeightedGrade();
+
     });
+
+    function loadWeightedGrade() {
+        $.ajax({
+            url: "/Gradebook/GetWeightedGrade",
+            type: "GET",
+            data: {courseId: @Model.courseId},
+            datatype: "json",
+            success: function(data) {
+                var weightedGrade = data["weightedGrade"].toFixed(2);
+                $('#weightedGradeDisplayArea').html("<h2>Current Weighted Grade: " + data["weightedGrade"].toFixed(2) + "%</h2>");
+                if(weightedGrade > 80){
+                    $('#weightedGradeDisplayArea h2').attr("class", "text-success");
+                }
+                else if(weightedGrade > 60) {
+                    $('#weightedGradeDisplayArea h2').attr("class", "text-warning");
+                }
+                else {
+                    $('#weightedGradeDisplayArea h2').attr("class", "text-danger");
+                }
+            },
+            error: function(data) {
+                alert("error");
+            }
+        })
+    }
+
+    function loadOverallCategoryGrades() {
+        $.ajax({
+            type: "POST",
+            url: "GetCategoriesForCourse",
+            datatype: "json",
+            data: {courseId: @Model.courseId},
+            success: function(data) {
+                $.each(data, function(index, element) {
+                    getCategoryGrade(element.categoryName);
+                });
+            },
+            error: function(data) {
+
+            }
+        });
+    }
+
+    function getCategoryGrade(categoryName) {
+        $.ajax({
+            type: "POST",
+            url: "/Gradebook/GetOverallCategoryGrade",
+            data: {courseId: @Model.courseId, categoryName: categoryName},
+            datatype: "json",
+            success: function(data) {
+                var grade = (data["categoryGrade"] * 100).toFixed(2);
+                var id = data["categoryId"];
+                $('#categoryGradeList').append("<div class='col-md-12 list-group-item' data-id='" + id + "'>" + categoryName + " - " + grade + " %</div>");
+            },
+            error: function(data) {
+                alert("error");
+            }
+        });
+    }
 
 
 
@@ -138,6 +218,7 @@
             datatype: "text",
             data: {categoryId: categoryId},
             success: function() {
+                // Deletes the category from the list of categories AND the category grade breakdown section.
                 $('[data-id="' + categoryId + '"]').remove();
                 setAddWorkItemButtonState();
             },
@@ -248,6 +329,7 @@
                 var newCategoryEntry =  "<div class='list-group-item categoryEntry' data-id=" + data['categoryId'] + ">" + data['categoryName'] + " - " + data['categoryWeight'] + "<span class='remove-icon glyphicon glyphicon-remove-circle pull-right'></span> %</div>";
                 $('.categoryList').append(newCategoryEntry);
 
+                getCategoryGrade(data['categoryName']);
                 // Check if this category puts the total at 100%
                 setAddWorkItemButtonState();
 

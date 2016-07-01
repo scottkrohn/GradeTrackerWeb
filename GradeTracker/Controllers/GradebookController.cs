@@ -14,36 +14,43 @@ namespace GradeTracker.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         /****************** DATABASE ACCESS FUNCTIONS ********************/
+
+		// Perform a query to find specific CourseModel objects in the DB.
         private List<CourseModel> QueryCourses(string query)
         {
             var result = db.CourseModels.SqlQuery(query);
             return result.ToList();
         }
 
+		// Perform a query to find specific SemesterModel objects in the DB.
         private List<SemesterModel> QuerySemesters(string query)
         {
             var result = db.SemesterModels.SqlQuery(query);
             return result.ToList();
         }
 
+		// Get the SemesterModel object that a CourseModel object is associated with.
         private SemesterModel GetSemesterForCourse(CourseModel course)
         {
             var result = db.SemesterModels.SqlQuery(String.Format("Select * FROM SemesterModels WHERE semesterId={0}", course.assocSemesterId));
             return result.First();
         }
 
+		// Get a CourseModel object with a courseId that matches the function argument.
         private CourseModel GetCourseById(int courseId)
         {
             var result = db.CourseModels.SqlQuery(String.Format("SELECT * FROM CourseModels where courseId={0}", courseId));
             return result.First();
         }
 
+		// Get all WorkItemModels associated with a specific CourseModel object.
         private List<WorkItemModel> GetWorkItemsForCourse(CourseModel course)
         {
             var result = db.WorkItemModels.SqlQuery(String.Format("SELECT * FROM WorkItemModels WHERE assocCourseId={0}", course.courseId));
             return result.ToList();
         }
 
+		// Get all CategoryWeights associated with a given CourseModel object.
         private List<CategoryWeight> GetCategoryWeightsForCourse(CourseModel course)
         {
             var result = db.CategoryWeights.SqlQuery(String.Format("SELECT * FROM CategoryWeights WHERE assocCourseId={0}", course.courseId));
@@ -64,6 +71,7 @@ namespace GradeTracker.Controllers
 			return result.First();
 		}
 
+		// Get a WorkItemModel with an id that matches the function argument.
 		private WorkItemModel GetWorkItemById(int id)
 		{
 			var result = db.WorkItemModels.SqlQuery(String.Format("SELECT * from WorkItemModels WHERE id={0}", id));
@@ -74,6 +82,24 @@ namespace GradeTracker.Controllers
 
 
         /**************************AJAX CALLS*****************************/
+
+		[HttpGet]
+		public JsonResult GetWeightedGrade(int courseId)
+		{
+			Models.BusinessLogic.GradeComputation gradeComp = new Models.BusinessLogic.GradeComputation(db);
+			double grade = gradeComp.GetWeightedCourseGrade(courseId);
+			return Json(new {weightedGrade = grade}, JsonRequestBehavior.AllowGet);
+		}
+
+		[HttpPost]
+		public JsonResult GetOverallCategoryGrade(int courseId, string categoryName)
+		{
+			Models.BusinessLogic.GradeComputation gradeComp = new Models.BusinessLogic.GradeComputation(db);
+			CategoryWeight weight = GetCategoryWeight(categoryName, courseId);
+			double categoryGrade = gradeComp.GetCategoryOverallGrade(courseId, categoryName);
+			return Json(new {categoryGrade = categoryGrade, categoryId = weight.categoryId}, JsonRequestBehavior.AllowGet);
+		}
+		
 
 		[HttpPost]
 		public JsonResult DeleteWorkItem(int id)
