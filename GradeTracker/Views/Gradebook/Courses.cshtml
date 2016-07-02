@@ -11,7 +11,6 @@
 </div>
 <hr />
 
-<!-- TODO: Add the current course grade to each course listing. -->
 <!-- TODO: Show the overall GPA for the semester. -->
 <div class="row">
     <div class="col-lg-7">
@@ -32,7 +31,7 @@
             @{
                 foreach(var course in Model)
                 {
-                    <div class="courseEntry col-md-12"><a href="@Url.Action("SpecificCourse", "Gradebook", course)" class="list-group-item">@course.courseCode @course.courseNumber</a></div>
+                    <div class="col-md-12" ><a href="@Url.Action("SpecificCourse", "Gradebook", course)" class="list-group-item courseEntry" data-courseId="@course.courseId">@course.courseCode @course.courseNumber</a></div>
                 }
             }
         </div>
@@ -43,3 +42,39 @@
 <div class="row add-margin-top">
     <a href="@Url.Action("Index", "Home")">Back to Semester List</a>
 </div>
+
+<script>
+
+    // Load the grade for each course in the list of courses.
+    $(document).ready(function () {
+        loadCourseGrades();
+    });
+
+    /*
+    * Ajax call to GradebookController to get the weighted grade for eac
+    * course in the current semester.
+    */
+    function loadCourseGrades() {
+        $('.courseEntry').each(function () {
+            var entry = $(this);
+            var courseId = $(this).attr("data-courseId");
+            $.ajax({
+                url: "/Gradebook/GetWeightedGrade",
+                type: "GET",
+                datatype: "json",
+                data: { courseId: courseId},
+                success: function (data) {
+                    var grade = (data["weightedGrade"]).toFixed(2);
+                    entry.append("<span class='pull-right'>" + grade + "%</span>");
+                },
+                error: function (data) {
+                    alert("error");
+                }
+            })
+        });
+    };
+
+
+
+
+</script>

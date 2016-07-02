@@ -96,6 +96,10 @@ namespace GradeTracker.Controllers
 			return Json(new {weightedGrade = grade}, JsonRequestBehavior.AllowGet);
 		}
 
+		/*
+		 * Uses a GradeComputation object to get the overall grade for a specific weight
+		 * category in a specific course. Returns the result in a Json object.
+		 */ 
 		[HttpPost]
 		public JsonResult GetOverallCategoryGrade(int courseId, string categoryName)
 		{
@@ -275,12 +279,13 @@ namespace GradeTracker.Controllers
         */ 
         public ActionResult Courses(SemesterModel semester) 
 		{
-            var model = QueryCourses(String.Format("SELECT * FROM CourseModels WHERE assocSemesterId={0}", semester.semesterId));
+            var courses = QueryCourses(String.Format("SELECT * FROM CourseModels WHERE assocSemesterId={0}", semester.semesterId));
             ViewBag.CurrentTerm = semester.termName;
             ViewBag.CurrentYear = semester.termYear;
             ViewData["CurrentSemesterString"] = semester.termName.ToString() + " " + semester.termYear.ToString() ;
             ViewData["CurrentSemester"] = semester;
-			return View(model);	
+			
+			return View(courses);	
 		}
 
 		/*

@@ -5,12 +5,16 @@ using System.Web;
 
 namespace GradeTracker.Models.BusinessLogic
 {
-
 	public interface IGradeComputation
 	{
 		double GetCategoryOverallGrade(int courseId, string categoryname);
+		double GetWeightedCourseGrade(int courseId);
 	}
 
+	/* 
+	 * GradeComputation is a class that is used to perform grade calculations on the courses 
+	 * in the database. Accessed by Controllers then the data is sent to Views for display.
+	 */
 	public class GradeComputation: IGradeComputation
 	{
 		private ApplicationDbContext db;
@@ -20,6 +24,12 @@ namespace GradeTracker.Models.BusinessLogic
 			this.db = db;
 		}
 
+		/*
+		 * Uses a LINQ query to get the work items associated with the parameter courseId
+		 * that have the category name matching the paramter categoryName. Determines the
+		 * overall grade for that category and returns it. If there's no work items that match,
+		 * return 1 (for 100%) for that category.
+		 */ 
 		public double GetCategoryOverallGrade(int courseId, string categoryName)
 		{
 			var matchingWorkItems = from w in db.WorkItemModels
@@ -41,6 +51,9 @@ namespace GradeTracker.Models.BusinessLogic
 			return 1;
 		}
 
+		/*
+		 * Returns the overall grade for a given course.
+		 */ 
 		public double GetWeightedCourseGrade(int courseId)
 		{
 			// Get the course we're computing the grade for.
