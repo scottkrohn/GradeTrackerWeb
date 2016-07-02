@@ -3,6 +3,8 @@
     ViewBag.Title = "SpecificCourse";
 }
 <script src="~/Scripts/jquery-confirm.min.js"></script>
+
+<!-- TITLE SECTION -->
 <div class="row add-margin-top">
     <div class="col-md-6">
         <h2>@Model.courseCode @Model.courseNumber</h2>
@@ -14,8 +16,6 @@
 </div>
 <hr />
 <div class="row">
-
-    <!-- TODO: Add "Weighted Grade" label. -->
     <!-- TODO: Add "COMPLETE COURSE RESET" button -->
 
     <!-- WORK ITEMS LIST SECTION -->
@@ -79,6 +79,7 @@
                 </div>
             </div>
 
+            <!-- FORM SECTION -->
             <div class="form-horizontal">
                 <div class="col-md-12 form-group">
                     @Html.Label("Name", htmlAttributes: new { @class = "control-label"})
@@ -91,6 +92,8 @@
 
                 <div class="btn btn-default col-md-5 col-md-offset-2 addCategoryButton">Add New Category</div>
             </div>
+            
+        <!-- STATUS LABEL SECTION -->
             <div class="row text-center">
                 <div class="col-md-5 col-sm-offset-2 statusLabel">
                     <div class="success" id="successLabel" style="float: left" hidden>Category Added.</div>
@@ -132,6 +135,10 @@
 
     });
 
+    /*
+    * Ajax call to the GradebookController to get the overall weighted grade for a course.
+    * Displays the grade in the header with a color coding depending on the quality of the grade.
+    */
     function loadWeightedGrade() {
         $.ajax({
             url: "/Gradebook/GetWeightedGrade",
@@ -157,10 +164,16 @@
         })
     }
 
+    /*
+    * Ajax call to GradebookController to get a Json list of all weight categories
+    * that are associated with the current course. On 'success' it runs each weight
+    * category through the 'getCategoryGrade' function which gets and displays the grade
+    * for each category.
+    */
     function loadOverallCategoryGrades() {
         $.ajax({
             type: "POST",
-            url: "GetCategoriesForCourse",
+            url: "/Gradebook/GetCategoriesForCourse",
             datatype: "json",
             data: {courseId: @Model.courseId},
             success: function(data) {
@@ -174,6 +187,11 @@
         });
     }
 
+    /*
+    * Ajax call to GradebookController to get an overall grade for a given category in the current
+    * course. On 'success' it adds a new col-md-12 to the #categoryGradeList to display the grade
+    * for the category that the weight was fetched for.
+    */
     function getCategoryGrade(categoryName) {
         $.ajax({
             type: "POST",
@@ -191,8 +209,6 @@
         });
     }
 
-
-
     // Deletes a category entry from the database and removes the div for it.
     $('.categoryList').on('click', '.remove-icon', function() {
        var selectedCategoryId = $(this).parent().attr("data-id");
@@ -208,7 +224,6 @@
             }
         });;
     });
-
 
     // Deletes the category with the matching categoryId
     function deleteCategory(categoryId) {
@@ -299,7 +314,6 @@
                 }
             });
         }
-
     });
 
     /*

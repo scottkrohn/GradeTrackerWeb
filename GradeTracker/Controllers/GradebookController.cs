@@ -83,6 +83,11 @@ namespace GradeTracker.Controllers
 
         /**************************AJAX CALLS*****************************/
 
+
+		/*
+		 * Uses a GradeComputation obeject to get the overall weighted grade for a courseId.
+		 * Retrusn the grade to the view as a Json object.
+		 */ 
 		[HttpGet]
 		public JsonResult GetWeightedGrade(int courseId)
 		{
@@ -100,7 +105,10 @@ namespace GradeTracker.Controllers
 			return Json(new {categoryGrade = categoryGrade, categoryId = weight.categoryId}, JsonRequestBehavior.AllowGet);
 		}
 		
-
+		/*
+		 * Attempts to delete a work item from the databse and returns the result of the
+		 * attempt as a Json object to the view.
+		 */ 
 		[HttpPost]
 		public JsonResult DeleteWorkItem(int id)
 		{
@@ -120,6 +128,10 @@ namespace GradeTracker.Controllers
 			return Json(new {result = false});
 		}
 
+		/*
+		 * Get all of the weight categories associated with a course and returns
+		 * the results to the view as a Json array.
+		 */ 
 		[HttpPost]
 		public JsonResult GetCategoriesForCourse(int courseId)
 		{
@@ -128,8 +140,12 @@ namespace GradeTracker.Controllers
 			return Json(categories);
 		}
 
+		/*
+		 * Attempts to edit the score of a existing work item in the database.
+		 * Returns a partial view with the updated Model to the view for display.
+		 */ 
 		[HttpPost]
-		public PartialViewResult EditWorkItemScore(int id, int earned , int possible)
+		public PartialViewResult EditWorkItemScore(int id, int earned, int possible)
 		{
 			WorkItemModel foundWorkItem = GetWorkItemById(id);
 			foundWorkItem.pointsEarned = earned;
@@ -142,6 +158,10 @@ namespace GradeTracker.Controllers
 			return PartialView("_EditWorkItemPartial", foundWorkItem);
 		}
 
+		/*
+		 * Attempts to edit the weight category of a existing work item in the database.
+		 * Returns a partial view with the updated Model to the view for display.
+		 */ 
 		public PartialViewResult EditWorkItemCategory(int id, string categoryName)
 		{
 			WorkItemModel foundWorkItem = GetWorkItemById(id);
