@@ -15,7 +15,7 @@
     </div>
 </div>
 <hr />
-<div class="row">
+<div class="row" id="courseDataSection">
     <!-- TODO: Add "COMPLETE COURSE RESET" button -->
     <!-- TODO: Add "DELETE COURSE" button -->
 
@@ -124,8 +124,21 @@
     </div>
 </div>
 
+<div class="row" id="deleteSuccessSection" hidden>
+    <div class="col-md-6">
+        <h3 class="text-success">Course Successfully Deleted</h3>
+        @Html.ActionLink("Back to Courses", "Courses", ViewData["CurrentSemester"])
+    </div>
+</div>
+
 <script>
 
+    /*
+    * Displays two confirm dialogs to the user to verify they wish to delete the 
+    * current course. If they select YES then deleteCourse() is called which makes
+    * an ajax call to GradebookController to delete the CourseModel as well as the
+    * associated WorkItemModels and CategoryWeight objects. 
+    */
     $('#deleteCourseButton').click(function() {
         $.confirm({
             icon: "glyphicon glyphicon-remove",
@@ -144,6 +157,12 @@
                     confirmButtonClass: "btn-danger",
                     cancelButtonClass: "btn-info",
                     title: "Confirm Delete Course",
+                    confirm: function() {
+                        deleteCourse();
+                        displayDeletedSuccess();
+                    },
+                    cancel: function() {
+                    }
                 })
             },
             cancel: function() {
@@ -152,8 +171,32 @@
         });
     });
 
+    // Hides the course section and displays a message saying that the course has been deleted.
+    function displayDeletedSuccess() {
+        $('#courseDataSection').toggle();
+        $('#deleteSuccessSection').toggle();
+    }
+
     $('#resetCourseButton').click(function() {
     });
+
+    /*
+    * Makes ajax call to GradebookController to delete the current CourseModel as well
+    * as the associated WorkItemModels and CategoryWeight objects.
+    */
+    function deleteCourse() {
+        $.ajax({
+            type: "POST",
+            url: "/Gradebook/DeleteCourse",
+            datatype: "json",
+            data: {courseId: @Model.courseId},
+            success: function(data) {
+            },
+            error: function(data) {
+                alert("ERROR");
+            }
+        });
+    }
 
 
     /* 

@@ -108,6 +108,77 @@ namespace GradeTracker.Controllers
 			double categoryGrade = gradeComp.GetCategoryOverallGrade(courseId, categoryName);
 			return Json(new {categoryGrade = categoryGrade, categoryId = weight.categoryId}, JsonRequestBehavior.AllowGet);
 		}
+
+
+		// TODO: Make sure all items are deleted, or restore back to database.
+		/*
+		 * Delete a specific course from the databases, as well as the WorkItemModels
+		 * and CategoryWeight objects that are associated with that course.
+		 */ 
+		[HttpPost]
+		public JsonResult DeleteCourse(int courseId)
+		{
+			CourseModel course = GetCourseById(courseId);
+			List<CategoryWeight> associatedWeights = GetCategoryWeightsForCourse(course);
+			List<WorkItemModel> associatedWorkItems = GetWorkItemsForCourse(course);
+
+			try
+			{
+				if(DeleteAllWeights(course))
+				{
+					if(DeleteAllWorkItems(course))
+					{
+						if(db.CourseModels.Remove(course) != null)
+						{
+							db.SaveChanges();
+							return Json(new {result = true});
+						}
+					}
+				}
+			}
+			catch(Exception ex)
+			{
+				return Json(new {result = false});
+			}
+			return Json(new {result = false});
+		}
+
+		// Deletes all work items associated with the CourseModel from the DB.
+		public bool DeleteAllWorkItems(CourseModel course)
+		{
+			List<WorkItemModel> associatedWorkItems = GetWorkItemsForCourse(course);
+			try
+			{
+				foreach(var workItem in associatedWorkItems)
+				{
+					db.WorkItemModels.Remove(workItem);
+				}
+			}
+			catch(Exception ex)
+			{
+				return false;
+			}
+			return true;
+		}
+
+		// Deletes all category weights associated with the CourseModel from the DB.
+		public bool DeleteAllWeights(CourseModel course)
+		{
+			List<CategoryWeight> associatedWeights = GetCategoryWeightsForCourse(course);
+			try
+			{
+				foreach(var weight in associatedWeights)
+				{
+
+				db.CategoryWeights.Remove(weight);
+				}
+			}
+			catch(Exception ex)
+			{
+				return false;
+			}
+			return true;
+		}
 		
 		/*
 		 * Attempts to delete a work item from the databse and returns the result of the
