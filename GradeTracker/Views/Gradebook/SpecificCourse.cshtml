@@ -162,11 +162,12 @@
                         displayDeletedSuccess();
                     },
                     cancel: function() {
+                        // Do nothing, just close the dialog.
                     }
                 })
             },
             cancel: function() {
-
+                // Do nothing, just close the dialog.
             }
         });
     });
@@ -177,8 +178,65 @@
         $('#deleteSuccessSection').toggle();
     }
 
+    // Performs double confirmation to reset the course. 
     $('#resetCourseButton').click(function() {
+        $.confirm({
+            title: "Reset Course",
+            content: "Are you sure you want to reset this course?",
+            icon: "glyphicon glyphicon-refresh",
+            confirmButton: "Yes",
+            cancelButton: "No",
+            confirmButtonClass: "btn-danger",
+            cancelButtonClass: "btn-info",
+            confirm: function() {
+                $.confirm({
+                    title: "Confirm Reset Course",
+                    content: "Resttting a course CANNOT be undone. You will lose all of your Work Items and Weight Categories. <strong class='text-danger'>Are you sure?</strong>",
+                    confirmButton: "Yes",
+                    cancelButton: "No",
+                    confirmButtonClass: "btn-danger",
+                    cancelButtonClass: "btn-info",
+                    confirm: function() {
+                        resetCourse(); 
+                    },
+                    cancel: function() {
+                        // Do nothing, just close the dialog.
+                    }
+                })
+            },
+            cancel: function() {
+                // Do nothing, just close the dialog.
+            }
+        })
     });
+
+    /*
+    * Makes ajax call to GradebookController to reset the current CourseModel by deleting
+    * all of the associated WorkItemModels and CategoryWeights.
+    */
+    function resetCourse() {
+        $.ajax({
+            url: "/Gradebook/ResetCourse",
+            type: "POST",
+            datatype: "json",
+            data: {courseId: @Model.courseId},
+            success: function() {
+                // Display confirmation once the reset is complete, then reload the page.
+                $.alert({
+                    title: "Reset Successful!",
+                    icon: "glyphicon glyphicon-ok",
+                    content: "The course has been successfully reset.",
+                    confirmButton: "Okay",
+                    confirmButtonClass: "btn-success",
+                    confirm: function() {
+                        location.reload();
+                    }
+                });
+            } ,
+            error: function() {
+            }
+        })
+    }
 
     /*
     * Makes ajax call to GradebookController to delete the current CourseModel as well

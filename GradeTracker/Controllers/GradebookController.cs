@@ -143,6 +143,32 @@ namespace GradeTracker.Controllers
 			return Json(new {result = false});
 		}
 
+		/*
+		 * Deletes all of the WorkItemModels and CategoryWeights that are associated with
+		 * a given course id. Returns a Json object with the result (true/false).
+		 */ 
+		[HttpPost]
+		public JsonResult ResetCourse(int courseId)
+		{
+			CourseModel course = GetCourseById(courseId);
+			try
+			{
+				if(DeleteAllWeights(course))
+				{
+					if(DeleteAllWorkItems(course))
+					{
+						db.SaveChanges();
+						return Json(new {result = true});
+					}
+				}
+			}
+			catch(Exception ex)
+			{
+				return Json(new {result = false});
+			}
+			return Json(new {result = false});
+		}
+
 		// Deletes all work items associated with the CourseModel from the DB.
 		public bool DeleteAllWorkItems(CourseModel course)
 		{
