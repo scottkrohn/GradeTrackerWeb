@@ -70,5 +70,57 @@ namespace GradeTracker.Models.BusinessLogic
 			}
 			return weightedGrade;
 		}
+
+		private double CalcGradePoints(double grade)
+		{
+			if(grade >= 92)
+			{
+				return 4.0;
+			}
+			else if (grade >= 90)
+			{
+				return 3.7;
+			}
+			else if(grade >= 88)
+			{
+				return 3.30;
+			}
+			else if(grade >= 82)
+			{
+				return 3.0;
+			}
+			else if(grade >= 80)
+			{
+				return 2.7;
+			}
+			else if (grade >= 78)
+			{
+				return 2.3;
+			}
+			else if (grade >= 72)
+			{
+				return 2.0;
+			}
+			else if(grade >= 70)
+			{
+				return 1.7;
+			}
+			else if(grade >= 68)
+			{
+				return 1.3;
+			}
+			else if (grade >= 62)
+			{
+				return 1.0;
+			}
+			else if(grade >= 60)
+			{
+				return 0.7;
+			}
+			else
+			{
+				return 0;
+			}
+		}
 	}
 }

@@ -229,9 +229,6 @@ C:\Users\skrohn\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.Migr
 C:\Users\skrohn\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.csproj.GenerateResource.Cache
 C:\Users\skrohn\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.dll
 C:\Users\skrohn\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.pdb
-C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.csprojResolveAssemblyReference.cache
-C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.Migrations.InitialCreate.resources
-C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.csproj.GenerateResource.Cache
 C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\bin\GradeTracker.dll.config
 C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\bin\GradeTracker.dll
 C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\bin\GradeTracker.pdb
@@ -285,5 +282,7 @@ C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\bin\Microsoft.Owin.Security.
 C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.Migrations.InitialCreate.resources
+C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.csproj.GenerateResource.Cache
 C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.dll
 C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Debug\GradeTracker.pdb

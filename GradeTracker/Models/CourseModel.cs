@@ -21,5 +21,7 @@ namespace GradeTracker.Models
 		public string courseNumber {get; set;}
         public List<CategoryWeight> categories { get; set; }
         public List<WorkItemModel> WorkItems { get; set; }
+		[Display(Name ="Credit Hours")]
+		public int creditHours {get; set; }
 	}
 }
