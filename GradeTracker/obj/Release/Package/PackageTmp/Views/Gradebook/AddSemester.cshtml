@@ -4,14 +4,13 @@
     ViewBag.Title = "View";
 }
 
-<h2>View @Model.assocStudentId</h2>
+<h3>Add New Semester</h3>
 
 @using (Html.BeginForm("SaveNewSemester", "Gradebook")) 
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>SemesterModel</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">

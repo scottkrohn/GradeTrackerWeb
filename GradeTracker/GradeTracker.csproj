@@ -32,16 +32,17 @@
     <WarningLevel>4</WarningLevel>
     <PublishDatabaseSettings>
       <Objects>
-        <ObjectGroup Name="DefaultConnection-Deployment" Order="1" Enabled="True">
+        <ObjectGroup Name="DefaultConnection-Deployment" Order="1" Enabled="False">
           <Destination Path="Data Source=184.168.194.75%3bInitial Catalog=personalgradebook%3bUser ID=skrohn86%3bPassword=Refinnej8!" />
-          <Object Type="DbFullSql" Enabled="True">
-            <PreSource Path="Data Source=%28LocalDB%29\MSSQLLocalDB%3bAttachDbFilename=C:\Users\skroh\Desktop\aspnet-GradeTracker-20160521074010.mdf%3bIntegrated Security=True%3bConnect Timeout=30" ScriptSchema="True" ScriptData="False" CopyAllFullTextCatalogs="False" DriDefaults="True" />
+          <Object Type="DbFullSql" xmlns="">
+            <PreSource Path="" ScriptSchema="True" ScriptData="False" CopyAllFullTextCatalogs="False" DriDefaults="True" />
             <Source Path="obj\Debug\AutoScripts\DefaultConnection-Deployment_SchemaOnly.sql" Transacted="True" />
           </Object>
         </ObjectGroup>
       </Objects>
     </PublishDatabaseSettings>
-    <IncludeIisSettings>false</IncludeIisSettings>
+    <IncludeIisSettings>true</IncludeIisSettings>
+    <PublishDatabases>false</PublishDatabases>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
