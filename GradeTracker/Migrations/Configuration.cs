@@ -10,6 +10,7 @@ namespace GradeTracker.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
+			AutomaticMigrationDataLossAllowed = true;
             ContextKey = "GradeTracker.Models.ApplicationDbContext";
         }
 

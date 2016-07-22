@@ -1,0 +1,98 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.add-margin-bottom {
+    margin-bottom: 20px;
+}
+
+.add-margin-top{
+    margin-top: 20px;
+}
+
+.add-margin-left{
+    margin-left: 20px;
+}
+
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:         flex;
+}
+
+.navbar-custom {
+  background-color: #6a778e;
+  border-color: #909ba3;
+}
+
+.custom-mine a {
+    color: blue;
+}
+
+/* Adjust Menu colors - Normal */
+.navbar .nav li a {
+color:          #FFFFFF;
+}
+
+/* Adjust Menu colors - Normal */
+.navbar .nav li a:hover {
+    color: #06394f;
+}
+
+.error {
+    color: red;
+    font-size: small;
+}
+
+.error-sm {
+    color: red;
+    font-size: x-small;
+}
+
+.success {
+    color: royalblue;
+    font-size: small;
+}
+
+.remove-icon {
+    color: red;
+    display:none;
+}
+
+.categoryEntry:hover .remove-icon {
+    display: block;
+}
+
+#footer{
+      position:fixed;
+      text-align: center;
+      width: 100%;
+      bottom:0;
+      border-top:1px solid #666;
+}
+
+.categorySubtitle {
+    font-size: x-small;
+}

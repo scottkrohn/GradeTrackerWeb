@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewBag.Title = "AccountHome";
+}
+
+<div class="row add-margin-top">
+    <div class="col-md-6">
+        <h2>@Model.firstName @Model.lastName's Gradebook</h2>
+        <h4>@Model.school</h4>
+    </div>
+</div>
+<hr />
+
+<!-- TODO: Show the GPA for each course in the list.  -->
+<div class="row">
+    <div class="col-lg-7">
+        <div class="row">
+            <!-- List Title -->
+            <div class="col-md-9 add-margin-bottom">
+                <h3 style="display: inline;">Semesters</h3>
+            </div>
+
+            <div class="col-md-3">
+                <a href="@Url.Action("AddSemester", "Gradebook", Model)" class="btn btn-primary "><span class="glyphicon glyphicon-plus"></span> Add Semester</a>
+            </div>
+        </div>
+            
+        <div class="list-group semesterGroup">
+             <!-- Get all of the semesters associated with the logged in student and display them as a list-group. -->
+            @{
+                var db = new GradeTracker.Models.ApplicationDbContext();
+                var semesters = db.SemesterModels.SqlQuery(String.Format("SELECT * FROM SemesterModels WHERE assocStudentId={0}", Model.studentId));
+                foreach(var semester in semesters) {
+                    <div class="semesterEntry col-md-12"><a href="@Url.Action("Courses", "Gradebook", semester)" class="list-group-item">@semester.termName @semester.termYear</a></div>
+                }
+            }        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        //$('div').attr("style", "border: 1px solid");
+    });
+</script>

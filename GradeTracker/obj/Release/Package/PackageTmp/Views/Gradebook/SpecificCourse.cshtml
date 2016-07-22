@@ -1,0 +1,530 @@
+﻿
+@{
+    ViewBag.Title = "SpecificCourse";
+}
+<script src="~/Scripts/jquery-confirm.min.js"></script>
+
+<!-- TODO: Add 'Edit Course' Button -->
+
+<!-- TITLE SECTION -->
+<div class="row add-margin-top">
+    <div class="col-md-6">
+        <h2>@Model.courseCode @Model.courseNumber</h2>
+        <h4>@ViewData["CurrentSemesterString"]</h4>
+        @Html.ActionLink("Back to Courses", "Courses", ViewData["CurrentSemester"])
+    </div>
+    <div class="col-md-6 add-margin-top" id="weightedGradeDisplayArea">
+    </div>
+</div>
+<hr />
+<div class="row" id="courseDataSection">
+
+    <!-- WORK ITEMS LIST SECTION -->
+    <div class="col-lg-5">
+            <!-- List Title -->
+            <div class="col-md-8 add-margin-bottom">
+                <h4 style="display: inline;">Work Items</h4>
+            </div>
+
+            <!-- Add WorkItem button -->
+            <div class="col-md-4">
+                <a href="@Url.Action("AddWorkItem", "Gradebook", Model)" class="btn btn-primary" id="addWorkItemButton">Add Work Item</a>
+            </div>
+
+        <!-- list-group of WorkItems -->
+            <div class="list-group workItemGroup col-lg-12">
+                @{
+                    var workItemList = ViewData["AssociatedWorkItems"] as List<GradeTracker.Models.WorkItemModel>;
+                    foreach(var workItem in workItemList)
+                    {
+                        <div class="workItemEntry col-md-12" data-id="@workItem.categoryName">
+                            <a href="@Url.Action("SpecificWorkItem", "Gradebook", workItem)" class="list-group-item clearfix">
+                            @workItem.itemName
+                                <span class="pull-right">@workItem.pointsEarned/@workItem.pointsPossible</span>
+                                <br />
+                                <span class="pull-left categorySubtitle">@workItem.categoryName</span>
+                                </a>
+                        </div>
+                    }
+                }
+            </div>
+    </div>
+
+    <!-- CURRENT WEIGHT CATEGORY SECTION -->
+    <div class="col-lg-3 categorySection">
+        <div class="col-sm-12 add-margin-bottom">
+            <h4 style="display: inline;">Current Categories: <span id="weightTotalLabel"></span></h4>
+        </div>
+        <div class="list-group categoryList col-sm-12">
+            @{
+                var categories = ViewData["AssociatedCategoryWeights"] as List<GradeTracker.Models.CategoryWeight>;
+                <!-- No categories error stays hidden until necessary -->
+                <p class="error" id="noCategoriesError" hidden>You must add grading weights totaling 100% before adding any work items.</p>
+                foreach(var category in categories)
+                {
+                    <div class="list-group-item categoryEntry" data-id="@category.categoryId">@category.categoryName - @category.categoryWeight %<span class="remove-icon glyphicon glyphicon-remove-circle pull-right"></span></div>
+                }
+            }
+        </div>
+        <div class="col-md-12">
+            <p id="deleteCategoryError" class="error text-center"></p>
+        </div>
+    </div>
+
+    <!-- ADD WEIGHT CATEGORY SECTION -->
+    <div class="col-lg-4" id="addCategorySection">
+            <div class="row">
+                <!-- List Title -->
+                <div class="col-md-6 add-margin-bottom">
+                    <h4 style="display: inline;">Weight Categories</h4>
+                </div>
+            </div>
+
+            <!-- FORM SECTION -->
+            <div class="form-horizontal">
+                <div class="col-md-12 form-group">
+                    @Html.Label("Name", htmlAttributes: new { @class = "control-label"})
+                    @Html.TextBox("categoryNameBox", "", htmlAttributes: new { @class="form-control "})
+                </div>
+                <div class="col-md-12 form-group">
+                    @Html.Label("Weight", htmlAttributes: new { @class = "control-label"})
+                    @Html.TextBox("categoryWeightBox", "", htmlAttributes: new { @class="form-control", @type="number"})
+                </div>
+
+                <div class="btn btn-default col-md-5 col-md-offset-2 addCategoryButton">Add New Category</div>
+            </div>
+            
+        <!-- STATUS LABEL SECTION -->
+            <div class="row text-center">
+                <div class="col-md-5 col-sm-offset-2 statusLabel">
+                    <div class="success" id="successLabel" style="float: left" hidden>Category Added.</div>
+                    <div class="error-sm" id="errorLabel" hidden></div>
+                </div>
+        </div> 
+    </div>
+
+    <!-- Category Grade Display Section -->
+    <div class="col-lg-12" id="categoryGradeSection">
+        <!-- Section Title -->
+        <div class="col-md-12 add-margin-bottom">
+            <h4 style="display: inline;">Overall Grade Breakdown</h4>
+        </div>
+
+        <div class="col-md-6" id="overallCategoryGradeSection">
+            <h5>Overall Category Grades</h5>
+            <div id="categoryGradeList" class="list-group">
+                <!-- Populated by Jquery -->
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-11 add-margin-top" id="deleteResetSection">
+        <div class="btn btn-danger col-md-2" id="deleteCourseButton"><span class="glyphicon glyphicon-alert" ></span> Delete Course</div>
+        <div class="btn btn-danger col-md-2 add-margin-left" id="resetCourseButton"><i class="glyphicon glyphicon-refresh"></i> Reset Course</div>
+    </div>
+</div>
+
+<div class="row" id="deleteSuccessSection" hidden>
+    <div class="col-md-6">
+        <h3 class="text-success">Course Successfully Deleted</h3>
+        @Html.ActionLink("Back to Courses", "Courses", ViewData["CurrentSemester"])
+    </div>
+</div>
+
+<script>
+
+    /*
+    * Displays two confirm dialogs to the user to verify they wish to delete the 
+    * current course. If they select YES then deleteCourse() is called which makes
+    * an ajax call to GradebookController to delete the CourseModel as well as the
+    * associated WorkItemModels and CategoryWeight objects. 
+    */
+    $('#deleteCourseButton').click(function() {
+        $.confirm({
+            icon: "glyphicon glyphicon-remove",
+            title: "Delete Course",
+            content: "Are you sure you want to delete this course?",
+            confirmButton: "Yes",
+            cancelButton: "No",
+            confirmButtonClass: "btn-danger",
+            cancelButtonClass: "btn-info",
+            confirm: function() {
+                $.confirm({
+                    icon: "glyphicon glyphicon-alert",
+                    content: "Deleting a course CANNOT be undone, all course data will be lost. <strong class='text-danger'>Are you sure?</strong>",
+                    confirmButton: "Yes",
+                    cancelButton: "No",
+                    confirmButtonClass: "btn-danger",
+                    cancelButtonClass: "btn-info",
+                    title: "Confirm Delete Course",
+                    confirm: function() {
+                        deleteCourse();
+                        displayDeletedSuccess();
+                    },
+                    cancel: function() {
+                        // Do nothing, just close the dialog.
+                    }
+                })
+            },
+            cancel: function() {
+                // Do nothing, just close the dialog.
+            }
+        });
+    });
+
+    // Hides the course section and displays a message saying that the course has been deleted.
+    function displayDeletedSuccess() {
+        $('#courseDataSection').toggle();
+        $('#deleteSuccessSection').toggle();
+    }
+
+    // Performs double confirmation to reset the course. 
+    $('#resetCourseButton').click(function() {
+        $.confirm({
+            title: "Reset Course",
+            content: "Are you sure you want to reset this course?",
+            icon: "glyphicon glyphicon-refresh",
+            confirmButton: "Yes",
+            cancelButton: "No",
+            confirmButtonClass: "btn-danger",
+            cancelButtonClass: "btn-info",
+            confirm: function() {
+                $.confirm({
+                    title: "Confirm Reset Course",
+                    content: "Resttting a course CANNOT be undone. You will lose all of your Work Items and Weight Categories. <strong class='text-danger'>Are you sure?</strong>",
+                    confirmButton: "Yes",
+                    cancelButton: "No",
+                    confirmButtonClass: "btn-danger",
+                    cancelButtonClass: "btn-info",
+                    confirm: function() {
+                        resetCourse(); 
+                    },
+                    cancel: function() {
+                        // Do nothing, just close the dialog.
+                    }
+                })
+            },
+            cancel: function() {
+                // Do nothing, just close the dialog.
+            }
+        })
+    });
+
+    /*
+    * Makes ajax call to GradebookController to reset the current CourseModel by deleting
+    * all of the associated WorkItemModels and CategoryWeights.
+    */
+    function resetCourse() {
+        $.ajax({
+            url: "/Gradebook/ResetCourse",
+            type: "POST",
+            datatype: "json",
+            data: {courseId: @Model.courseId},
+            success: function() {
+                // Display confirmation once the reset is complete, then reload the page.
+                $.alert({
+                    title: "Reset Successful!",
+                    icon: "glyphicon glyphicon-ok",
+                    content: "The course has been successfully reset.",
+                    confirmButton: "Okay",
+                    confirmButtonClass: "btn-success",
+                    confirm: function() {
+                        location.reload();
+                    }
+                });
+            } ,
+            error: function() {
+            }
+        })
+    }
+
+    /*
+    * Makes ajax call to GradebookController to delete the current CourseModel as well
+    * as the associated WorkItemModels and CategoryWeight objects.
+    */
+    function deleteCourse() {
+        $.ajax({
+            type: "POST",
+            url: "/Gradebook/DeleteCourse",
+            datatype: "json",
+            data: {courseId: @Model.courseId},
+            success: function(data) {
+            },
+            error: function(data) {
+                alert("ERROR");
+            }
+        });
+    }
+
+
+    /* 
+    * Checks if the total weight of all the categories added is 100%.
+    */ 
+    $(document).ready(function() {
+        if($('categoryList').children().length <= 1) {
+            $('.noCategoriesError').show();
+        }
+        setAddWorkItemButtonState();
+        loadOverallCategoryGrades();
+        loadWeightedGrade();
+
+    });
+
+    /*
+    * Ajax call to the GradebookController to get the overall weighted grade for a course.
+    * Displays the grade in the header with a color coding depending on the quality of the grade.
+    */
+    function loadWeightedGrade() {
+        $.ajax({
+            url: "/Gradebook/GetWeightedGrade",
+            type: "GET",
+            data: {courseId: @Model.courseId},
+            datatype: "json",
+            success: function(data) {
+                var weightedGrade = data["weightedGrade"].toFixed(2);
+                $('#weightedGradeDisplayArea').html("<h2>Current Weighted Grade: " + data["weightedGrade"].toFixed(2) + "%</h2>");
+                if(weightedGrade > 80){
+                    $('#weightedGradeDisplayArea h2').attr("class", "text-success");
+                }
+                else if(weightedGrade > 60) {
+                    $('#weightedGradeDisplayArea h2').attr("class", "text-warning");
+                }
+                else {
+                    $('#weightedGradeDisplayArea h2').attr("class", "text-danger");
+                }
+            },
+            error: function(data) {
+                alert("error");
+            }
+        })
+    }
+
+    /*
+    * Ajax call to GradebookController to get a Json list of all weight categories
+    * that are associated with the current course. On 'success' it runs each weight
+    * category through the 'getCategoryGrade' function which gets and displays the grade
+    * for each category.
+    */
+    function loadOverallCategoryGrades() {
+        $.ajax({
+            type: "POST",
+            url: "/Gradebook/GetCategoriesForCourse",
+            datatype: "json",
+            data: {courseId: @Model.courseId},
+            success: function(data) {
+                $.each(data, function(index, element) {
+                    getCategoryGrade(element.categoryName);
+                });
+            },
+            error: function(data) {
+
+            }
+        });
+    }
+
+    /*
+    * Ajax call to GradebookController to get an overall grade for a given category in the current
+    * course. On 'success' it adds a new col-md-12 to the #categoryGradeList to display the grade
+    * for the category that the weight was fetched for.
+    */
+    function getCategoryGrade(categoryName) {
+        $.ajax({
+            type: "POST",
+            url: "/Gradebook/GetOverallCategoryGrade",
+            data: {courseId: @Model.courseId, categoryName: categoryName},
+            datatype: "json",
+            success: function(data) {
+                var grade = (data["categoryGrade"] * 100).toFixed(2);
+                var id = data["categoryId"];
+                $('#categoryGradeList').append("<div class='col-md-12 list-group-item' data-id='" + id + "'>" + categoryName + " - " + grade + " %</div>");
+            },
+            error: function(data) {
+                alert("error");
+            }
+        });
+    }
+
+    // Deletes a category entry from the database and removes the div for it.
+    $('.categoryList').on('click', '.remove-icon', function() {
+       var selectedCategoryId = $(this).parent().attr("data-id");
+        // Attempt to delete a category. 
+       // Will not succeed if the category is in use by a WorkItem
+        $.confirm({
+            title: 'Confirm Delete',
+            content: 'Are you sure you want to delete this weight category?',
+            confirm: function(){
+                deleteCategoryAttempt(selectedCategoryId);
+            },
+            cancel: function(){
+            }
+        });;
+    });
+
+    // Deletes the category with the matching categoryId
+    function deleteCategory(categoryId) {
+        $.ajax({
+            type: "POST",
+            url: "/Gradebook/DeleteCategoryWeight",
+            datatype: "text",
+            data: {categoryId: categoryId},
+            success: function() {
+                // Deletes the category from the list of categories AND the category grade breakdown section.
+                $('[data-id="' + categoryId + '"]').remove();
+                setAddWorkItemButtonState();
+            },
+            error: function() {
+                alert("ERROR!");
+            }
+        });
+    }
+
+    /*
+    * Attempt to delete a category. Makes ajax call to GradebookController to checking
+    * if the category that we're trying to delete has been assigned to any work items.
+    * If it has, it won't delete the category. 
+    */
+    function deleteCategoryAttempt(categoryId) {
+        var result = false;
+        $.ajax({
+            type: "POST",
+            url: "/Gradebook/CategoryInUse",
+            datatype: "text",
+            data: {categoryId: categoryId, courseId: @Model.courseId},
+            success: function(data) {
+
+                if(data["inUse"] == true) {
+                    $('#deleteCategoryError').html("You cannot delete that category, it's being used by one or more work items.").show();
+                    $('#deleteCategoryError').fadeOut(4000, function(){});
+                }
+                else {
+                    deleteCategory(categoryId);
+                }
+            },
+            error: function(data) {
+
+                alert(data.status);
+            }
+        });
+        return result;
+    }
+
+    /* 
+    * Called when the "Add New Category" button is clicked. Validates that the input is not empty,
+    * then makes an ajax call to the GradebookController to check the total values of the weights
+    * that have already been added to the course. If the new values will cause the total to exceed
+    * 100% then the category isn't added an and error is displayed. 
+    */
+    $('.addCategoryButton').click(function () {
+        // Check if either input box is empty.
+        if($('#categoryNameBox').val() == "" || $('#categoryWeightBox').val() == "") {
+            displayError("Invalid input, there's an empty textbox.");
+        }
+        else {
+            var currentWeightTotal = 0;
+            var courseId = @Model.courseId;
+            $.ajax({
+                type:"POST",
+                url: "/Gradebook/GetCurrentWeightTotal",
+                datatype: "text",
+                data: {courseId: courseId},
+                success: function(data) {
+                    currentWeightTotal += parseInt(data, 10);
+                    // Check if input is a valid integer for Weight.
+                    if(Number.isInteger(parseInt($('#categoryWeightBox').val(), 10))) {
+                        currentWeightTotal += parseInt($('#categoryWeightBox').val(), 10);
+                        // Check if the new category weight value will cause the total to exceed 100%
+                        if(currentWeightTotal <= 100) {
+                            saveWeight(currentWeightTotal);
+                        }
+                        else {
+                            displayError("Cannot add category, total weight will exceed 100%");
+                        }
+                    }
+                    else {
+                        displayError("Invalid input, please try again");
+                    }
+                },
+                error: function(data) {
+                        displayError("Sometime went wrong when adding a category.");
+                }
+            });
+        }
+    });
+
+    /*
+    * Display an error message for 3 seconds beneath submit button.
+    */
+    function displayError(message){
+        $('#errorLabel').html(message).show();
+        $("#errorLabel").fadeOut(3000, function () {});
+    }
+
+    /* 
+    * Make Ajax request to the GradebookController to add a new category weight. This function
+    * is called from the 'success' callback when the "Add Category" button is clicked. Therefore
+    * the input has been validated and can be added to the database. 
+    */
+    function saveWeight(currentTotal) {
+        var courseId = @Model.courseId;
+        var categoryName = $('#categoryNameBox').val();
+        var categoryWeight = parseInt($('#categoryWeightBox').val(), 10);
+        
+        $.ajax({
+            type: "POST",
+            url: "/Gradebook/SaveNewCategoryWeight",
+            datatype: "text",
+            data: {courseId: courseId, categoryName: categoryName, categoryWeight: categoryWeight},
+            success: function(data) {
+                var newCategoryEntry =  "<div class='list-group-item categoryEntry' data-id=" + data['categoryId'] + ">" + data['categoryName'] + " - " + data['categoryWeight'] + "<span class='remove-icon glyphicon glyphicon-remove-circle pull-right'></span> %</div>";
+                $('.categoryList').append(newCategoryEntry);
+
+                getCategoryGrade(data['categoryName']);
+                // Check if this category puts the total at 100%
+                setAddWorkItemButtonState();
+
+                // Display success label
+                $("#successLabel").show();
+                $("#successLabel").fadeOut(3000, function() {
+                });
+
+
+                // Clear input boxes
+                $('#categoryNameBox').val("");
+                $('#categoryWeightBox').val("");
+            },
+            error: function(data) {
+                alert(data.statusText);
+            }
+        });
+    };
+
+    /* 
+    * Checks if weight totals equal 100, if so enable the "Add Work Item" button
+    * and removes the status messages telling the user they must add more categories.
+    */
+    function setAddWorkItemButtonState() {
+        var courseId = @Model.courseId;
+        $.ajax({
+            type: "POST",
+            url: "/Gradebook/GetCurrentWeightTotal",
+            datatype: "text",
+            data: {courseId: courseId},
+            success: function(data) {
+                // Update the weight total displayed in the section header
+                $('#weightTotalLabel').html(parseInt(data,10) + "%");
+                if(parseInt(data, 10) != 100) {
+                    $('#addWorkItemButton').hide();
+                    $('#noCategoriesError').show();
+                } 
+                else {
+                    $('#addWorkItemButton').show();
+                    $('#noCategoriesError').hide();
+                }
+            },
+            error: function(data) {
+                alert("Error getting current weight total.")
+            }
+        });
+    }
+
+</script>

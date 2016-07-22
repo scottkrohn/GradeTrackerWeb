@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sitemanifest>
+  <DbFullSql path="C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Release\AutoScripts\DefaultConnection-Deployment_SchemaOnly.sql" Transacted="True" />
+  <IisApp path="C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Release\Package\PackageTmp" managedRuntimeVersion="v4.0" />
+  <setAcl path="C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Release\Package\PackageTmp" setAclResourceType="Directory" />
+  <setAcl path="C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Release\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
+</sitemanifest>

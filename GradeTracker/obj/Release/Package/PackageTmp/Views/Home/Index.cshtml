@@ -1,0 +1,28 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    ViewBag.ApplicationName = "Personal Gradebook";
+    }
+
+<div class="jumbotron">
+    <p class="lead">@ViewBag.Applicationname is a <strong>free</strong> grade tracking application for students.</p>
+    <a href="#" class="btn btn-primary">Learn More</a>
+    <a href="@Url.Action("Register", "Account")" class="btn btn-primary">Create Account</a>
+</div>
+
+<div class="row">
+    <div class="col-md-4 text-center">
+        <h3>Grade Tracking</h3>
+        <h5>Create an account to keep track of your grades, calculate GPAs and store previous grade history.</h5>
+    </div> <!-- END "col-md-4" -->
+
+    <div class="col-md-4 text-center">
+        <h3>Finals Grade Calculator</h3>
+        <h5>Calculate the grades you need on your finals to pass your classes.</h5>
+    </div> <!-- END "col-md-4" -->
+
+    <div class="col-md-4 text-center">
+        <h3>Average Class Grades</h3>
+        <h5>View the average scores for a class that you share with other users.</h5>
+    </div> <!-- END "col-md-4" -->
+
+ </div> <!-- END "row" -->
