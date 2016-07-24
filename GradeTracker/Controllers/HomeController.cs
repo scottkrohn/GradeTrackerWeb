@@ -41,7 +41,13 @@ namespace GradeTracker.Controllers
 			return View();
 		}
 
-		// MAYBE USE PARTIAL VIEWS TO DISPLAY ALL SEMESTER
+		/*
+		 * Display the "Learn More" view.
+		 */ 
+		public ActionResult LearnMore()
+		{
+			return View();
+		}
 
 		public List<SemesterModel> getSemesters(StudentModel student)
 		{

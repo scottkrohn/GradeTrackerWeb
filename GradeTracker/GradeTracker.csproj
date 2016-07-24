@@ -41,7 +41,7 @@
         </ObjectGroup>
       </Objects>
     </PublishDatabaseSettings>
-    <IncludeIisSettings>true</IncludeIisSettings>
+    <IncludeIisSettings>false</IncludeIisSettings>
     <PublishDatabases>false</PublishDatabases>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -275,8 +275,29 @@
     <Content Include="Images\headerLogo.png" />
     <Content Include="Images\logo.png" />
     <Content Include="Images\navbarLogo.png" />
+    <Content Include="Images\Screenshots\CourseListScreen.PNG" />
+    <Content Include="Images\Screenshots\CourseListScreenThumb.png" />
+    <Content Include="Images\Screenshots\SemesterListScreen.PNG" />
+    <Content Include="Images\Screenshots\SemesterListScreenThumb.png" />
+    <Content Include="Images\Screenshots\SpecificCourseScreen.PNG" />
+    <Content Include="Images\Screenshots\SpecificCourseScreenThumb.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\fancybox\source\blank.gif" />
+    <Content Include="Scripts\fancybox\source\fancybox_loading%402x.gif" />
+    <Content Include="Scripts\fancybox\source\fancybox_loading.gif" />
+    <Content Include="Scripts\fancybox\source\fancybox_overlay.png" />
+    <Content Include="Scripts\fancybox\source\fancybox_sprite%402x.png" />
+    <Content Include="Scripts\fancybox\source\fancybox_sprite.png" />
+    <Content Include="Scripts\fancybox\source\helpers\fancybox_buttons.png" />
+    <Content Include="Scripts\fancybox\source\helpers\jquery.fancybox-buttons.css" />
+    <Content Include="Scripts\fancybox\source\helpers\jquery.fancybox-buttons.js" />
+    <Content Include="Scripts\fancybox\source\helpers\jquery.fancybox-media.js" />
+    <Content Include="Scripts\fancybox\source\helpers\jquery.fancybox-thumbs.css" />
+    <Content Include="Scripts\fancybox\source\helpers\jquery.fancybox-thumbs.js" />
+    <Content Include="Scripts\fancybox\source\jquery.fancybox.css" />
+    <Content Include="Scripts\fancybox\source\jquery.fancybox.js" />
+    <Content Include="Scripts\fancybox\source\jquery.fancybox.pack.js" />
     <Content Include="Scripts\jquery-2.2.3.js" />
     <Content Include="Scripts\jquery-2.2.3.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -341,6 +362,7 @@
     <Content Include="Views\Gradebook\AddWeights.cshtml" />
     <Content Include="Views\Gradebook\SpecificWorkItem.cshtml" />
     <Content Include="Views\Gradebook\_EditWorkItemPartial.cshtml" />
+    <Content Include="Views\Home\LearnMore.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

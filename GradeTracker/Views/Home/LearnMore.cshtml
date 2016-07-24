@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "LearnMore";
+}
+<link href="~/Scripts/fancybox/source/jquery.fancybox.css" rel="stylesheet" />
+<script src="~/Scripts/fancybox/source/jquery.fancybox.pack.js"></script>
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-3">
+            <img src="~/Images/logo.png" />
+        </div>
+        <div class="col-lg-6">
+            <h3 class="text-center add-margin-left">Personal gradebook is a 100% free <br />grade tracking web application for students.</h3>
+            <a href="@Url.Action("Register", "Account")"class="btn btn-primary">Join Today!</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <img src="" />
+    <div class="col-lg-4">
+        <h4 class="text-info">View/Add Current and Past Semesters</h4>
+       <a class="fancybox" rel="group" href="~/Images/Screenshots/SemesterListScreen.png"><img src="~/Images/Screenshots/SemesterListScreenThumb.png" alt="" /></a>
+    </div>
+    <div class="col-lg-4">
+        <h4 class="text-info">View/Add Courses To Each Semester</h4>
+       <a class="fancybox" rel="group" href="~/Images/Screenshots/CourseListScreen.png"><img src="~/Images/Screenshots/CourseListScreenThumb.png" alt="" /></a>
+    </div>
+    <div class="col-lg-4">
+        <h4 class="text-info">Add Assignments and Weights To Courses</h4>
+       <a class="fancybox" rel="group" href="~/Images/Screenshots/SpecificCourseScreen.png"><img src="~/Images/Screenshots/SpecificCourseScreenThumb.png" alt="" /></a>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.fancybox').fancybox();
+    });
+</script>
+
