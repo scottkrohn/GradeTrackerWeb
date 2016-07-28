@@ -275,6 +275,7 @@
     <Content Include="Images\headerLogo.png" />
     <Content Include="Images\logo.png" />
     <Content Include="Images\navbarLogo.png" />
+    <Content Include="Images\Screenshots\clickoverlay.png" />
     <Content Include="Images\Screenshots\CourseListScreen.PNG" />
     <Content Include="Images\Screenshots\CourseListScreenThumb.png" />
     <Content Include="Images\Screenshots\SemesterListScreen.PNG" />
