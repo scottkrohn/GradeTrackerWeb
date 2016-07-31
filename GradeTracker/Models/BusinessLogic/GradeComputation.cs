@@ -24,6 +24,18 @@ namespace GradeTracker.Models.BusinessLogic
 			this.db = db;
 		}
 
+		// Used for create a GradeComputation object that won't be accessing the database.
+		public GradeComputation()
+		{
+			db = null;
+		}
+
+		public double CalcGradeNeededOnFinal(double currentGrade, double gradeWanted, double finalWeight)
+		{
+			// Formula for calculating graded needed: (gradeWanted - (100 - finalWeight) * (currentGrade/100)/finalWeight
+			return 100* ((gradeWanted - (100-finalWeight) * (currentGrade/100))/finalWeight);
+		}
+
 		/*
 		 * Uses a LINQ query to get the work items associated with the parameter courseId
 		 * that have the category name matching the paramter categoryName. Determines the

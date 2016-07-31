@@ -364,6 +364,7 @@
     <Content Include="Views\Gradebook\SpecificWorkItem.cshtml" />
     <Content Include="Views\Gradebook\_EditWorkItemPartial.cshtml" />
     <Content Include="Views\Home\LearnMore.cshtml" />
+    <Content Include="Views\Home\FinalGradeCalculator.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -41,12 +41,24 @@ namespace GradeTracker.Controllers
 			return View();
 		}
 
+		public ActionResult FinalGradeCalculator()
+		{
+			return View();
+		}
+
 		/*
 		 * Display the "Learn More" view.
 		 */ 
 		public ActionResult LearnMore()
 		{
 			return View();
+		}
+
+		public JsonResult GetFinalGradeNeeded(double currentGrade, double gradeWanted, double finalWeight)
+		{
+			Models.BusinessLogic.GradeComputation gradeComp = new Models.BusinessLogic.GradeComputation();
+			double finalGradeNeeded = gradeComp.CalcGradeNeededOnFinal(currentGrade, gradeWanted, finalWeight);
+			return Json(new {gradeNeeded = finalGradeNeeded}, JsonRequestBehavior.AllowGet);
 		}
 
 		public List<SemesterModel> getSemesters(StudentModel student)
