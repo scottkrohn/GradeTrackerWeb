@@ -32,8 +32,9 @@ namespace GradeTracker.Models.BusinessLogic
 
 		public double CalcGradeNeededOnFinal(double currentGrade, double gradeWanted, double finalWeight)
 		{
-			// Formula for calculating graded needed: (gradeWanted - (100 - finalWeight) * (currentGrade/100)/finalWeight
-			return 100* ((gradeWanted - (100-finalWeight) * (currentGrade/100))/finalWeight);
+			// Formula for calculating graded needed: (gradeWanted - (100 - finalWeight) * (currentGrade/100)/
+			double gradeNeeded = 100* ((gradeWanted - (100-finalWeight) * (currentGrade/100))/finalWeight);
+			return gradeNeeded;
 		}
 
 		/*
