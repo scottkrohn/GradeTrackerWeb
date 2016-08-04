@@ -33,6 +33,9 @@
                 {
                     <div class="col-md-12" ><a href="@Url.Action("SpecificCourse", "Gradebook", course)" class="list-group-item courseEntry" data-courseId="@course.courseId">@course.courseCode @course.courseNumber</a></div>
                 }
+                <div class="col-md-12 add-margin-top" id="noCoursesAddedWarning" hidden>
+                    <p class="text-warning">You currently don't have any courses associated with this semester. Click the "Add Course" button above to get started.</p>
+                </div>
             }
         </div>
     </div>
@@ -48,6 +51,11 @@
     // Load the grade for each course in the list of courses.
     $(document).ready(function () {
         loadCourseGrades();
+
+        // Display warning if there are you associated courses with the selected SemesterModel.
+        if ($('.courseEntry').length == 0) {
+            $('#noCoursesAddedWarning').show();
+        }
     });
 
     /*
