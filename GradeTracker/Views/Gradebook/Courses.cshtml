@@ -99,6 +99,10 @@
         })
     });
 
+    /*
+    * Confirm with the user that they want to delete the current semester. Then call
+    * the function 'deleteSemester()' if they agree.
+    */
     $('#deleteSemesterButton').click(function () {
         $.confirm({
             title: "Delete Semester",
@@ -131,6 +135,10 @@
         });
     })
 
+    /*
+    * Perform ajax call to the Gradebook controller to delete a semester object
+    * from the database.
+    */
     function deleteSemester() {
         var semesterId = $('#semesterInfo').attr('data-semester-id');
         $.ajax({
