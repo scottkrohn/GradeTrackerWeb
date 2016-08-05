@@ -33,12 +33,18 @@
                 foreach(var semester in semesters) {
                     <div class="semesterEntry col-md-12"><a href="@Url.Action("Courses", "Gradebook", semester)" class="list-group-item">@semester.termName @semester.termYear</a></div>
                 }
-            }        </div>
+                <div class="col-md-12 add-margin-top" id="noSemestersSection" hidden>
+                    <p class="text-warning">You currently don't have any semesters added to your gradebook. Click the "Add Semester" button above to get started.</p>
+                </div>
+            }        
+        </div>
     </div>
 </div>
 
 <script>
     $(document).ready(function () {
-        //$('div').attr("style", "border: 1px solid");
+        if ($('.semesterEntry').length == 0) {
+            $('#noSemestersSection').show();
+        }
     });
 </script>

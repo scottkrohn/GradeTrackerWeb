@@ -36,12 +36,33 @@ namespace GradeTracker.Controllers
             return result.First();
         }
 
+
+		// Get the Semester model object that is associated with the semesterID.
+		private SemesterModel GetSemesterById(int semesterId)
+		{
+			var result = db.SemesterModels.SqlQuery(String.Format("SELECT * FROM SemesterModels WHERE semesterId={0}", semesterId));
+			return result.First();
+		}
+
+		private int SemesterCount(int semesterId)
+		{
+			var result = db.SemesterModels.SqlQuery(String.Format("SELECT * FROM SemesterModels WHERE semesterId={0}", semesterId));
+			return result.Count();
+		}
+
 		// Get a CourseModel object with a courseId that matches the function argument.
         private CourseModel GetCourseById(int courseId)
         {
             var result = db.CourseModels.SqlQuery(String.Format("SELECT * FROM CourseModels where courseId={0}", courseId));
             return result.First();
         }
+
+		// Get all CourseModel objects associated with a specific semesterId
+		private List<CourseModel> GetCoursesForSemester(int semesterId)
+		{
+			var result = db.CourseModels.SqlQuery(String.Format("SELECT * FROM CourseModels where assocSemesterId={0}", semesterId));
+			return result.ToList();
+		}
 
 		// Get all WorkItemModels associated with a specific CourseModel object.
         private List<WorkItemModel> GetWorkItemsForCourse(CourseModel course)
@@ -109,8 +130,46 @@ namespace GradeTracker.Controllers
 			return Json(new {categoryGrade = categoryGrade, categoryId = weight.categoryId}, JsonRequestBehavior.AllowGet);
 		}
 
+		/*
+		 * Checks the database to see if a semester exists with the given semseterId. Used to prevent adding
+		 * courses to a semester that has been deleted.
+		 */ 
+		[HttpGet]
+		public JsonResult SemesterExists(int semesterId)
+		{
+			if(SemesterCount(semesterId) != 0)
+			{
+				return Json(new {result = true}, JsonRequestBehavior.AllowGet);
+			}	
+			return Json(new {result = false},JsonRequestBehavior.AllowGet);
+		}
 
-		// TODO: Make sure all items are deleted, or restore back to database.
+		[HttpPost]
+		public JsonResult DeleteSemester(int semesterId)
+		{
+			SemesterModel semester = GetSemesterById(semesterId);
+			List<CourseModel> associatedCourses = GetCoursesForSemester(semesterId);
+			try
+			{
+				foreach(CourseModel course in associatedCourses)
+				{
+					DeleteCourse(course.courseId);
+				}
+				if(db.SemesterModels.Remove(semester) != null)
+				{
+					db.SaveChanges();
+					return Json(new {result = true});
+				}
+			}
+			catch(Exception ex)
+			{
+				return Json(new {result = false});
+			}
+			return Json(new {result = false});
+			
+		}
+
+
 		/*
 		 * Delete a specific course from the databases, as well as the WorkItemModels
 		 * and CategoryWeight objects that are associated with that course.
@@ -381,6 +440,7 @@ namespace GradeTracker.Controllers
             ViewBag.CurrentYear = semester.termYear;
             ViewData["CurrentSemesterString"] = semester.termName.ToString() + " " + semester.termYear.ToString() ;
             ViewData["CurrentSemester"] = semester;
+            ViewData["CurrentSemesterID"] = semester.semesterId;
 			
 			return View(courses);	
 		}
