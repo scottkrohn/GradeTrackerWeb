@@ -126,12 +126,46 @@
 
 <div class="row" id="deleteSuccessSection" hidden>
     <div class="col-md-6">
-        <h3 class="text-success">Course Successfully Deleted</h3>
+        <h3 class="text-success" id="courseNotFoundLabel">Course Successfully Deleted</h3>
         @Html.ActionLink("Back to Courses", "Courses", ViewData["CurrentSemester"])
     </div>
 </div>
 
 <script>
+   /* 
+    * Setup the page if the course exists.
+    */ 
+    $(document).ready(function() {
+        // Check if the course exists before displaying anything.
+        $.ajax({
+            type: "GET",
+            url: "/Gradebook/CourseExists",
+            datatype: "json",
+            data: {courseId: @Model.courseId},
+            success: function(data) {
+                // If the course exists, display all the course data.   
+                if(data["result"] == true) {
+                    setAddWorkItemButtonState();
+                    loadOverallCategoryGrades();
+                    loadWeightedGrade();
+                    if($('categoryList').children().length <= 1) {
+                        $('.noCategoriesError').show();
+                    }
+                }
+                // If the course doesn't exist it means the user deleted the course
+                // then refreshed the page on the "delete success" message. In that case
+                // we don't want to display the course, just a message saying it doesn't
+                // exist.
+                else {
+                    $('#courseNotFoundLabel').html("Course not found.")
+                    displayDeletedSuccess();
+                }
+            },
+            error: function(data) {
+                alert("error");
+            }
+        });
+    });
 
     /*
     * Displays two confirm dialogs to the user to verify they wish to delete the 
@@ -257,18 +291,7 @@
     }
 
 
-    /* 
-    * Checks if the total weight of all the categories added is 100%.
-    */ 
-    $(document).ready(function() {
-        if($('categoryList').children().length <= 1) {
-            $('.noCategoriesError').show();
-        }
-        setAddWorkItemButtonState();
-        loadOverallCategoryGrades();
-        loadWeightedGrade();
-
-    });
+  
 
     /*
     * Ajax call to the GradebookController to get the overall weighted grade for a course.

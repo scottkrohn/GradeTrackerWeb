@@ -44,6 +44,7 @@ namespace GradeTracker.Controllers
 			return result.First();
 		}
 
+		// Checks the number of semesters that exist matching the passed semesterId
 		private int SemesterCount(int semesterId)
 		{
 			var result = db.SemesterModels.SqlQuery(String.Format("SELECT * FROM SemesterModels WHERE semesterId={0}", semesterId));
@@ -56,6 +57,13 @@ namespace GradeTracker.Controllers
             var result = db.CourseModels.SqlQuery(String.Format("SELECT * FROM CourseModels where courseId={0}", courseId));
             return result.First();
         }
+
+		// Checks the number of courses matching the passed courseId
+		private int CourseCount(int courseId)
+		{
+			var result = db.CourseModels.SqlQuery(String.Format("SELECT * FROM CourseModels WHERE courseId={0}", courseId));
+			return result.Count();
+		}
 
 		// Get all CourseModel objects associated with a specific semesterId
 		private List<CourseModel> GetCoursesForSemester(int semesterId)
@@ -171,6 +179,15 @@ namespace GradeTracker.Controllers
 			
 		}
 
+		[HttpGet]
+		public JsonResult CourseExists(int courseId)
+		{
+			if(CourseCount(courseId) != 0)
+			{
+				return Json(new {result = true}, JsonRequestBehavior.AllowGet);
+			}
+			return Json(new {result = false}, JsonRequestBehavior.AllowGet);
+		}
 
 		/*
 		 * Delete a specific course from the databases, as well as the WorkItemModels
