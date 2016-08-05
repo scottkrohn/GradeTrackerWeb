@@ -144,6 +144,8 @@ namespace GradeTracker.Controllers
 			return Json(new {result = false},JsonRequestBehavior.AllowGet);
 		}
 
+
+
 		[HttpPost]
 		public JsonResult DeleteSemester(int semesterId)
 		{

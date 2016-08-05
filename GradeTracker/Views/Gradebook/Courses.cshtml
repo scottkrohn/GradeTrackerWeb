@@ -65,8 +65,6 @@
 
     // Load the grade for each course in the list of courses.
     $(document).ready(function () {
-        loadCourseGrades();
-
         var semesterId = $('#semesterInfo').attr('data-semester-id');
         /*
         * Make call to the Gradebook controller to check if the semester exists. If it doesn't exist
@@ -81,7 +79,12 @@
             data: { semesterId, semesterId },
             success: function (data) {
                 if (data["result"] == true) {
-                    // Do nothing, load semester like normal.
+                    // If the semester exists, load the course grades and appropriate notices.
+                    loadCourseGrades();
+                    // Display warning if there are you associated courses with the selected SemesterModel.
+                    if ($('.courseEntry').length == 0) {
+                        $('#noCoursesAddedWarning').show();
+                    }
                 }
                 else {
                     // The semester has been deleted.
@@ -93,11 +96,6 @@
                 alert(data.statusText);
             }
         })
-
-        // Display warning if there are you associated courses with the selected SemesterModel.
-        if ($('.courseEntry').length == 0) {
-            $('#noCoursesAddedWarning').show();
-        }
     });
 
     $('#deleteSemesterButton').click(function () {
