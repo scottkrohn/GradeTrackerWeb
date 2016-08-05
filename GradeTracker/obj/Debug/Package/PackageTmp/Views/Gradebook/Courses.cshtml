@@ -15,7 +15,7 @@
 <hr />
 
 <!-- TODO: Show the overall GPA for the semester. -->
-<div class="row" id="semesterDataSection">
+<div class="row" id="semesterDataSection" hidden>
     <div class="col-lg-7">
         <div class="row">
             <!-- List Title -->
@@ -85,6 +85,7 @@
                     if ($('.courseEntry').length == 0) {
                         $('#noCoursesAddedWarning').show();
                     }
+                    $('#semesterDataSection').show();
                 }
                 else {
                     // The semester has been deleted.
@@ -147,8 +148,8 @@
     }
 
     function displayDeletedSuccess() {
-        $('#semesterDataSection').toggle();
-        $('#deleteSuccessSection').toggle();
+        $('#semesterDataSection').hide();
+        $('#deleteSuccessSection').show();
     }
 
     /*

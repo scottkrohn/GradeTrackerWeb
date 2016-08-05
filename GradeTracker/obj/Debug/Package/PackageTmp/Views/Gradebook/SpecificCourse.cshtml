@@ -17,7 +17,7 @@
     </div>
 </div>
 <hr />
-<div class="row" id="courseDataSection">
+<div class="row" id="courseDataSection" hidden>
 
     <!-- WORK ITEMS LIST SECTION -->
     <div class="col-lg-5">
@@ -151,6 +151,7 @@
                     if($('categoryList').children().length <= 1) {
                         $('.noCategoriesError').show();
                     }
+                    $('#courseDataSection').show();
                 }
                 // If the course doesn't exist it means the user deleted the course
                 // then refreshed the page on the "delete success" message. In that case
@@ -208,8 +209,8 @@
 
     // Hides the course section and displays a message saying that the course has been deleted.
     function displayDeletedSuccess() {
-        $('#courseDataSection').toggle();
-        $('#deleteSuccessSection').toggle();
+        $('#courseDataSection').hide();
+        $('#deleteSuccessSection').show();
     }
 
     // Performs double confirmation to reset the course. 
