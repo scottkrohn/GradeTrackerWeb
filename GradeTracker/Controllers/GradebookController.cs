@@ -552,6 +552,7 @@ namespace GradeTracker.Controllers
             ViewData["currentCourse"] = course;
 			ViewData["CategoryWeights"] = GetCategoryWeightsForCourse(course);
 			ViewData["WorkItem"] = workItem;
+			ViewBag.CourseTitle = course.courseCode + " " + course.courseNumber;
             return View(workItem);
         }
 
