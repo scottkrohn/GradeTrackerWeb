@@ -36,7 +36,6 @@ namespace GradeTracker.Controllers
             return result.First();
         }
 
-
 		// Get the Semester model object that is associated with the semesterID.
 		private SemesterModel GetSemesterById(int semesterId)
 		{
@@ -78,6 +77,13 @@ namespace GradeTracker.Controllers
             var result = db.WorkItemModels.SqlQuery(String.Format("SELECT * FROM WorkItemModels WHERE assocCourseId={0}", course.courseId));
             return result.ToList();
         }
+
+		// Returns the number of work items with a matching work item id.
+		private int WorkItemCount(int id)
+		{
+			var result = db.WorkItemModels.SqlQuery(String.Format("SELECT * FROM WorkItemModels WHERE id={0}",id));
+			return result.Count();
+		}
 
 		// Get all CategoryWeights associated with a given CourseModel object.
         private List<CategoryWeight> GetCategoryWeightsForCourse(CourseModel course)
@@ -263,6 +269,17 @@ namespace GradeTracker.Controllers
 				return false;
 			}
 			return true;
+		}
+
+		// Checks if a work item exists in the database.
+		[HttpGet]
+		public JsonResult WorkItemExists(int id)
+		{
+			if(WorkItemCount(id) != 0)
+			{
+				return Json(new {result = true }, JsonRequestBehavior.AllowGet);
+			}
+			return Json(new {result = false}, JsonRequestBehavior.AllowGet);
 		}
 
 		// Deletes all category weights associated with the CourseModel from the DB.
@@ -534,6 +551,7 @@ namespace GradeTracker.Controllers
             workItem.assocCourseId = course.courseId;
             ViewData["currentCourse"] = course;
 			ViewData["CategoryWeights"] = GetCategoryWeightsForCourse(course);
+			ViewData["WorkItem"] = workItem;
             return View(workItem);
         }
 

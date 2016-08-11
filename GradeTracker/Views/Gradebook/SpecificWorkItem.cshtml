@@ -17,7 +17,7 @@
 
 <hr />
 <!--Main content area. -->
-<div class="row" id="bodyContentArea">
+<div class="row" id="bodyContentArea" hidden>
     <div class="col-md-5" id="scoreDisplayArea">
         @Html.Partial("_EditWorkItemPartial")
     </div>
@@ -35,8 +35,30 @@
 <script>
 
     $(document).ready(function() {
-        $('#pointsEarnedBox').val(@Model.pointsEarned);
-        $('#pointsPossibleBox').val(@Model.pointsPossible);
+        $.ajax({
+            type: "GET",
+            url: "/Gradebook/WorkItemExists",
+            datatype: "json",
+            data: {id: @Model.id},
+            success: function(data) {
+                if(data["result"] == true) {
+                    $('#bodyContentArea').show();
+                    $('#pointsEarnedBox').val(@Model.pointsEarned);
+                    $('#pointsPossibleBox').val(@Model.pointsPossible);
+                }
+                else {
+                    $('#deleteWorkItemButton').hide();
+                    $('#scoreDisplayArea').html("<h3 class='text-danger'>Work Item Not Found</h3>");
+                    $('#bodyContentArea').show();
+                    $('#backLink').toggle();
+                }
+            },
+            error: function(data) {
+                alert("Error");
+            }
+        });
+
+
     });
 
     /*
