@@ -154,9 +154,11 @@ namespace GradeTracker.Controllers
 		{
 			if(SemesterCount(semesterId) != 0)
 			{
+				/*
 				if(GetSemesterById(semesterId).assocUserId != User.Identity.GetUserId()) {
 					return Json(new {result = "Invalid"}, JsonRequestBehavior.AllowGet);
 				}
+				*/
 				return Json(new {result = true}, JsonRequestBehavior.AllowGet);
 			}	
 			return Json(new {result = false},JsonRequestBehavior.AllowGet);
@@ -466,6 +468,25 @@ namespace GradeTracker.Controllers
 		}
         /*****************************************************************/
         
+		private bool ValidateCourseAccess(CourseModel course)
+		{
+			// TODO: NEED TO VALIDATE FOR CORRECT USER, RIGHT NOW IT ONLY VALIDATES THAT THE COURSE IS REAL
+			var result = db.CourseModels.SqlQuery(String.Format("SELECT * FROM CourseModels WHERE courseId={0} AND assocSemesterId={1} AND courseCode='{2}' AND courseNumber={3} AND creditHours={4}", course.courseId, course.assocSemesterId, course.courseCode, course.courseNumber, course.creditHours));
+			if(result.Count() == 0)
+			{
+				return false;
+			}
+			return true;
+		}
+
+		private bool ValidateSemesterAccess(SemesterModel semester)
+		{
+			var result = db.SemesterModels.SqlQuery(String.Format("SELECT * FROM SemesterModels WHERE semesterId={0} AND termName='{1}' AND termYear='{2}' AND assocStudentId='{3}' AND assocUserId='{4}'", semester.semesterId, semester.termName, semester.termYear, semester.assocStudentId, semester.assocUserId));
+			if(semester.assocUserId != User.Identity.GetUserId() || result.Count() == 0) {
+				return false;
+			}
+			return true;
+		}
 
         /***********************ROUTING FUNCTIONS*************************/
 
@@ -475,7 +496,13 @@ namespace GradeTracker.Controllers
         */ 
         public ActionResult Courses(SemesterModel semester) 
 		{
+			/*
 			if(semester.assocUserId != User.Identity.GetUserId())
+			{
+				return View("Error");
+			}
+			*/
+			if(!ValidateSemesterAccess(semester))
 			{
 				return View("Invalid");
 			}
@@ -494,6 +521,10 @@ namespace GradeTracker.Controllers
 		 */ 
         public ActionResult SpecificCourse(CourseModel course)
         {
+			if(!ValidateCourseAccess(course))
+			{
+				return View("Invalid");
+			}
 			SemesterModel currentSemester = GetSemesterForCourse(course);
             ViewData["CurrentSemester"] = currentSemester;
             ViewData["CurrentSemesterString"] = currentSemester.termName.ToString() + " " + currentSemester.termYear.ToString() ;

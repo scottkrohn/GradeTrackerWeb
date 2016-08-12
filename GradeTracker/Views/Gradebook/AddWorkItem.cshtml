@@ -7,7 +7,7 @@
 <h2>Add Work Item</h2>
 
 
-@using(Html.BeginForm("AddWorkItem", "Gradebook"))
+@using(Html.BeginForm("SaveNewWorkItem", "Gradebook"))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true,"", new { @class = "text-danger" })

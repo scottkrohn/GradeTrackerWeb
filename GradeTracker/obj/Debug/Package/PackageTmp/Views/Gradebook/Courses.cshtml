@@ -87,9 +87,8 @@
                     }
                     $('#semesterDataSection').show();
                 }
-                else if (data["result"] == "Invalid") {
-                    window.location.href = '@Url.Action("Invalid", "Home")';
-                }
+                
+            
                 else {
                     // The semester has been deleted.
                     $('#semesterNotFoundLabel').html("Semester not found.");
