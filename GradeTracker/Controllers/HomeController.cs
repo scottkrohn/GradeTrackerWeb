@@ -46,6 +46,11 @@ namespace GradeTracker.Controllers
 			return View();
 		}
 
+		public ActionResult Invalid()
+		{
+			return View();
+		}
+
 		/*
 		 * Display the "Learn More" view.
 		 */ 

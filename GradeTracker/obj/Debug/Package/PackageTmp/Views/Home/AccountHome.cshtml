@@ -29,7 +29,7 @@
              <!-- Get all of the semesters associated with the logged in student and display them as a list-group. -->
             @{
                 var db = new GradeTracker.Models.ApplicationDbContext();
-                var semesters = db.SemesterModels.SqlQuery(String.Format("SELECT * FROM SemesterModels WHERE assocStudentId={0}", Model.studentId));
+                var semesters = db.SemesterModels.SqlQuery(String.Format("SELECT * FROM SemesterModels WHERE assocUserId='{0}'", Model.assocUserAccountId));
                 foreach(var semester in semesters) {
                     <div class="semesterEntry col-md-12"><a href="@Url.Action("Courses", "Gradebook", semester)" class="list-group-item">@semester.termName @semester.termYear</a></div>
                 }

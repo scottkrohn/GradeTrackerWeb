@@ -154,6 +154,9 @@ namespace GradeTracker.Controllers
 		{
 			if(SemesterCount(semesterId) != 0)
 			{
+				if(GetSemesterById(semesterId).assocUserId != User.Identity.GetUserId()) {
+					return Json(new {result = "Invalid"}, JsonRequestBehavior.AllowGet);
+				}
 				return Json(new {result = true}, JsonRequestBehavior.AllowGet);
 			}	
 			return Json(new {result = false},JsonRequestBehavior.AllowGet);
