@@ -50,7 +50,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.pointsPossible, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.pointsPossible, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.pointsPossible, new { htmlAttributes = new { @class = "form-control", @Value=""} })
                     @Html.ValidationMessageFor(model => model.pointsPossible, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -58,7 +58,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.pointsEarned, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.pointsEarned, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.pointsEarned, new { htmlAttributes = new { @class = "form-control", @Value="" } })
                     @Html.ValidationMessageFor(model => model.pointsEarned, "", new { @class = "text-danger" })
                 </div>
             </div>

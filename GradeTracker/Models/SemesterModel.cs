@@ -18,5 +18,6 @@ namespace GradeTracker.Models
 		public int semesterId {get; set;}
 		public string assocStudentId {get; set;}
 		public List<CourseModel> courses;
+		public string assocUserId {get; set; }
 	}
 }

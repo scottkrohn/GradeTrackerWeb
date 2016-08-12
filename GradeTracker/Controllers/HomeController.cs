@@ -60,12 +60,5 @@ namespace GradeTracker.Controllers
 			double finalGradeNeeded = gradeComp.CalcGradeNeededOnFinal(currentGrade, gradeWanted, finalWeight);
 			return Json(new {gradeNeeded = finalGradeNeeded}, JsonRequestBehavior.AllowGet);
 		}
-
-		public List<SemesterModel> getSemesters(StudentModel student)
-		{
-			var db = new ApplicationDbContext();
-			var semesters = db.SemesterModels.SqlQuery(String.Format("SELECT * FROM SemesterModels WHERE assocStudentId={0}", student.studentId)).ToList<SemesterModel>();
-			return semesters;
-		}
 	}
 }

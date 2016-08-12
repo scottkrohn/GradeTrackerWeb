@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 
 namespace GradeTracker.Controllers
 {
@@ -471,6 +472,10 @@ namespace GradeTracker.Controllers
         */ 
         public ActionResult Courses(SemesterModel semester) 
 		{
+			if(semester.assocUserId != User.Identity.GetUserId())
+			{
+				return View("Invalid");
+			}
             var courses = QueryCourses(String.Format("SELECT * FROM CourseModels WHERE assocSemesterId={0}", semester.semesterId));
             ViewBag.CurrentTerm = semester.termName;
             ViewBag.CurrentYear = semester.termYear;
@@ -566,6 +571,7 @@ namespace GradeTracker.Controllers
 		{
 			if (ModelState.IsValid)
 			{
+				semester.assocUserId = User.Identity.GetUserId();
 				db.SemesterModels.Add(semester);
 				db.SaveChanges();
 				return RedirectToAction("Index", "Home");
