@@ -119,6 +119,13 @@ namespace GradeTracker.Controllers
 
         /**************************AJAX CALLS*****************************/
 
+		[HttpGet]
+		public JsonResult GetSemesterGPA(int semesterId) {
+			GradeTracker.Models.BusinessLogic.GradeComputation gradeComp = new Models.BusinessLogic.GradeComputation(db);
+			List<CourseModel> courses = GetCoursesForSemester(semesterId);
+			double semesterGpa = gradeComp.CalculateSemesterGPA(courses);
+			return Json(new {semesterGpa = semesterGpa }, JsonRequestBehavior.AllowGet);
+		}
 
 		/*
 		 * Uses a GradeComputation obeject to get the overall weighted grade for a courseId.
@@ -479,6 +486,12 @@ namespace GradeTracker.Controllers
 			return true;
 		}
 
+		/* 
+		 * Check if the student attempting to access a SemesterModel is both the current logged
+		 * in user as well as the student that is associated with the semester. Used to prevent
+		 * a user from changing URL parameters to point to a semester ID that they shouldn't
+		 * have access to.
+		 */
 		private bool ValidateSemesterAccess(SemesterModel semester)
 		{
 			var result = db.SemesterModels.SqlQuery(String.Format("SELECT * FROM SemesterModels WHERE semesterId={0} AND termName='{1}' AND termYear='{2}' AND assocStudentId='{3}' AND assocUserId='{4}'", semester.semesterId, semester.termName, semester.termYear, semester.assocStudentId, semester.assocUserId));
@@ -496,12 +509,7 @@ namespace GradeTracker.Controllers
         */ 
         public ActionResult Courses(SemesterModel semester) 
 		{
-			/*
-			if(semester.assocUserId != User.Identity.GetUserId())
-			{
-				return View("Error");
-			}
-			*/
+			
 			if(!ValidateSemesterAccess(semester))
 			{
 				return View("Invalid");

@@ -133,7 +133,21 @@ namespace GradeTracker.Models.BusinessLogic
 			else
 			{
 				return 0;
+			} 
+		}
+
+		public double CalculateSemesterGPA(List<CourseModel> courses) {
+			double gradePoints = 0;
+			int totalCredits = 0;
+			foreach(CourseModel course in courses) {
+				gradePoints += CalcGradePoints(GetWeightedCourseGrade(course.courseId)) * course.creditHours;
+				totalCredits += course.creditHours;
 			}
+			// If the semester has no grades yet, return 0.
+			if(totalCredits == 0) {
+				return 0;
+			}
+			return gradePoints/totalCredits;
 		}
 	}
 }
