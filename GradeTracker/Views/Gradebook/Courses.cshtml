@@ -128,7 +128,7 @@
         $.confirm({
             title: "Delete Semester",
             content: "Are you sure you want to delete this semester?",
-            icon: "glyphicon glyphison-remove",
+            icon: "glyphicon glyphicon-remove",
             confirmButton: "Yes",
             cancelButton: "No",
             confirmButtonClass: "btn-danger",
@@ -141,7 +141,7 @@
                     cancelButton: "No",
                     confirmButtonClass: "btn-danger",
                     cancelButtonClass: "btn-info",
-                    title: "Confirm Delete Course",
+                    title: "Confirm Delete Semester",
                     confirm: function () {
                         deleteSemester();
                     },
@@ -155,6 +155,68 @@
             }
         });
     })
+
+    /*
+    * Confirm with the user that they want to reset the course. Call function resetSemester() if they agree.
+    */
+    $('#resetSemesterButton').click(function () {
+        $.confirm({
+            title: "Reset Semester",
+            content: "Are you sure you want to reset this semester?",
+            icon: "glyphicon glyphicon-refresh",
+            confirmButton: "Yes",
+            cancelButton: "No",
+            confirmButtonClass: "btn-danger",
+            cancelButtonClass: "btn-info",
+            confirm: function () {
+                $.confirm({
+                    icon: "glyphicon glyphicon-refresh",
+                    content: "Resetting a semester CANNOT be undone, all data will be lost. <strong class='text-danger'>Are you sure?</strong>",
+                    confirmButton: "Yes",
+                    cancelButton: "No",
+                    confirmButtonClass: "btn-danger",
+                    cancelButtonClass: "btn-info",
+                    title: "Confirm Reset Semester",
+                    confirm: function () {
+                        resetSemester();
+                    },
+                    cancel: function() {
+                        // Do nothing, close the dialog.
+                    }
+                })
+            },
+            cancel: function() {
+                // Do nothing, close the dialog.
+            }
+        });
+    });
+
+    /*
+    * Perform ajax call to the Gradebook Controller to delete all Courses, categories and
+    * work items associated with the current semester.
+    */
+    function resetSemester() {
+        var semesterId = $('#semesterInfo').attr('data-semester-id');
+        $.ajax({
+            url: "/Gradebook/ResetSemester",
+            datatype: "json",
+            type: "POST",
+            data: { semesterId, semesterId },
+            success: function (data) {
+                $.alert({
+                    title: "Reset Success",
+                    content: "The semester has been reset.",
+                    confirmButtonClass: "btn-info",
+                    confirm: function () {
+                        location.reload();
+                    }
+                });
+            },
+            error: function(data) {
+                alert("ERROR RESETTING SEMESTER");
+            }
+        });
+    }
 
     /*
     * Perform ajax call to the Gradebook controller to delete a semester object

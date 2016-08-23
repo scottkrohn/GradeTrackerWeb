@@ -172,7 +172,9 @@ namespace GradeTracker.Controllers
 		}
 
 
-
+		/*
+		 * Completely delete a semester, including all associated models. 
+		 */ 
 		[HttpPost]
 		public JsonResult DeleteSemester(int semesterId)
 		{
@@ -198,6 +200,31 @@ namespace GradeTracker.Controllers
 			
 		}
 
+		/*
+		 * Delete all CourseModels/CategoryWeights/WorkItemModels associated with the given semester.
+		 */ 
+		[HttpPost]
+		public JsonResult ResetSemester(int semesterId) 
+		{
+			SemesterModel semester = GetSemesterById(semesterId);
+			List<CourseModel> associatedCourses = GetCoursesForSemester(semesterId);
+			try
+			{
+				foreach(CourseModel course in associatedCourses)
+				{
+					DeleteCourse(course.courseId);
+				}
+				return Json(new {result = true});
+			}
+			catch(Exception ex)
+			{
+				return Json(new {result = false});
+			}
+		}
+
+		/*
+		 * Checks if the course exists in the database. Returns a JsonResult object.
+		 */ 
 		[HttpGet]
 		public JsonResult CourseExists(int courseId)
 		{
