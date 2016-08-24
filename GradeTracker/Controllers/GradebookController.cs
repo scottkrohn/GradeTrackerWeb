@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json.Linq;
+using System.Web.Script.Serialization;
 
 namespace GradeTracker.Controllers
 {
@@ -14,10 +16,10 @@ namespace GradeTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        /****************** DATABASE ACCESS FUNCTIONS ********************/
+		/****************** DATABASE ACCESS FUNCTIONS ********************/
 
 		// Perform a query to find specific CourseModel objects in the DB.
-        private List<CourseModel> QueryCourses(string query)
+		private List<CourseModel> QueryCourses(string query)
         {
             var result = db.CourseModels.SqlQuery(query);
             return result.ToList();
@@ -29,6 +31,13 @@ namespace GradeTracker.Controllers
             var result = db.SemesterModels.SqlQuery(query);
             return result.ToList();
         }
+
+		// Get all SemesterModels associated with the currently logged in user.
+		private List<SemesterModel> GetSemestersForStudent()
+		{
+			var result = db.SemesterModels.SqlQuery(String.Format("SELECT * FROM SemesterModels WHERE assocUserId='{0}'", User.Identity.GetUserId()));
+			return result.ToList();
+		}
 
 		// Get the SemesterModel object that a CourseModel object is associated with.
         private SemesterModel GetSemesterForCourse(CourseModel course)
@@ -119,6 +128,28 @@ namespace GradeTracker.Controllers
 
         /**************************AJAX CALLS*****************************/
 
+		/*
+		 * Get a list of the semester GPAs for all semesters belonging to the currently
+		 * logged in user. Return them as a Json object.
+		 */ 
+		[HttpGet]
+		public JsonResult GetAllSemesterGPAs()
+		{
+			List<SemesterModel> semesters = GetSemestersForStudent();
+			var result = new List<Object>();
+
+			foreach(SemesterModel semester in semesters)
+			{
+				var gpaJson = new JavaScriptSerializer().Serialize(GetSemesterGPA(semester.semesterId).Data);
+				var gpa = JObject.Parse(gpaJson)["semesterGpa"].ToString();
+				result.Add(new {semesterId = semester.semesterId, gpa =  Double.Parse(gpa)});
+			}
+			return Json(result, JsonRequestBehavior.AllowGet);
+		}
+
+		/*
+		 * Get the semester gpa for a specific semester.
+		 */ 
 		[HttpGet]
 		public JsonResult GetSemesterGPA(int semesterId) {
 			GradeTracker.Models.BusinessLogic.GradeComputation gradeComp = new Models.BusinessLogic.GradeComputation(db);

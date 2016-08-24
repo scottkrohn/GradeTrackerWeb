@@ -31,7 +31,7 @@
                 var db = new GradeTracker.Models.ApplicationDbContext();
                 var semesters = db.SemesterModels.SqlQuery(String.Format("SELECT * FROM SemesterModels WHERE assocUserId='{0}'", Model.assocUserAccountId));
                 foreach(var semester in semesters) {
-                    <div class="semesterEntry col-md-12"><a href="@Url.Action("Courses", "Gradebook", semester)" class="list-group-item">@semester.termName @semester.termYear</a></div>
+                    <div class="semesterEntry col-md-12"><a href="@Url.Action("Courses", "Gradebook", semester)" class="list-group-item">@semester.termName @semester.termYear<span class="pull-right" id=@semester.semesterId></span></a></div>
                 }
                 <div class="col-md-12 add-margin-top" id="noSemestersSection" hidden>
                     <p class="text-warning">You currently don't have any semesters added to your gradebook. Click the "Add Semester" button above to get started.</p>
@@ -46,5 +46,28 @@
         if ($('.semesterEntry').length == 0) {
             $('#noSemestersSection').show();
         }
+        loadSemesterGPAs();
     });
+
+    /*
+    * Perform ajax call to Gradebook controller to get a list of the current user's
+    * GPAs for each semester. Display them in the list of semesters.
+    */
+    function loadSemesterGPAs() {
+        $.ajax({
+            url: "/Gradebook/GetAllSemesterGPAs",
+            type: "GET",
+            datatype: "json",
+            success: function (data) {
+                $.each(data, function (index, element) {
+                    var gpa = (element.gpa).toFixed(2);
+                    $('#' + element.semesterId).html("GPA: " + gpa);
+                });
+            },
+            error: function (data) {
+                alert("ERROR");
+            }
+        });
+    }
+
 </script>

@@ -112,3 +112,4 @@ C:\Users\skrohn\Desktop\gradetrackerweb\GradeTracker\obj\Release\GradeTracker.Mi
 C:\Users\skrohn\Desktop\gradetrackerweb\GradeTracker\obj\Release\GradeTracker.csproj.GenerateResource.Cache
 C:\Users\skrohn\Desktop\gradetrackerweb\GradeTracker\obj\Release\GradeTracker.dll
 C:\Users\skrohn\Desktop\gradetrackerweb\GradeTracker\obj\Release\GradeTracker.pdb
+C:\Users\skroh\Desktop\GradeTrackerWeb\GradeTracker\obj\Release\GradeTracker.csprojResolveAssemblyReference.cache
