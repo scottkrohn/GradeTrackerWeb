@@ -61,7 +61,14 @@
             success: function (data) {
                 $.each(data, function (index, element) {
                     var gpa = (element.gpa).toFixed(2);
-                    $('#' + element.semesterId).html("GPA: " + gpa);
+                    // If the GPA isn't zero (meaning no classes have grades) display it.
+                    if (gpa != 0) {
+                        $('#' + element.semesterId).html("GPA: " + gpa);
+                    }
+                    // If the GPA == 0, display N/A instead of GPA: 0.00
+                    else {
+                        $('#' + element.semesterId).html("GPA: N/A");
+                    }
                 });
             },
             error: function (data) {

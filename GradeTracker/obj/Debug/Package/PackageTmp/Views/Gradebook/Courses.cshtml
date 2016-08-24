@@ -258,7 +258,12 @@
                 data: { courseId: courseId},
                 success: function (data) {
                     var grade = (data["weightedGrade"]).toFixed(2);
-                    entry.append("<span class='pull-right'>" + grade + "%</span>");
+                    if (grade != 0) {
+                        entry.append("<span class='pull-right'>" + grade + "%</span>");
+                    }
+                    else {
+                        entry.append("<span class='pull-right'>N/A</span>");
+                    }
                 },
                 error: function (data) {
                     alert("error");

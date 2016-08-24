@@ -136,6 +136,7 @@ namespace GradeTracker.Models.BusinessLogic
 			} 
 		}
 
+		// TODO: Ignore courses with a grade of zero in GPA calculation (this means the course has no assignments added)
 		public double CalculateSemesterGPA(List<CourseModel> courses) {
 			double gradePoints = 0;
 			int totalCredits = 0;
